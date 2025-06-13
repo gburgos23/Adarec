@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Adarec.Application.DTO\Adarec.Application.DTO.csproj" />
+    <ProjectReference Include="..\Adarec.Application\Adarec.Application.csproj" />
+    <ProjectReference Include="..\Adarec.Domain.Models\Adarec.Domain.Models.csproj" />
+    <ProjectReference Include="..\Adarec.Domain.Services\Adarec.Domain.Services.csproj" />
+  </ItemGroup>
+
+</Project>

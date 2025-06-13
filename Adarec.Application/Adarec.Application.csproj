@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="EntitiesService\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Adarec.Domain.Models\Adarec.Domain.Models.csproj" />
+    <ProjectReference Include="..\Adarec.Domain.Services\Adarec.Domain.Services.csproj" />
+    <ProjectReference Include="..\Adarec.Infrastructure.DataAccess\Adarec.Infrastructure.DataAccess.csproj" />
+  </ItemGroup>
+
+</Project>
