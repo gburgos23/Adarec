@@ -1,3 +1,4 @@
+using Adarec.Application.DTO.DTOs;
 using Adarec.Domain.Models.Entities;
 using System.ServiceModel;
 
@@ -20,5 +21,8 @@ namespace Adarec.Application.Services
 
         [OperationContract]
         Task DeleteDeviceTypeAsync(int deviceTypeId);
+
+        [OperationContract]
+        Task<List<DeviceTypeDto>> GetActiveDeviceTypesAsync();
     }
 }

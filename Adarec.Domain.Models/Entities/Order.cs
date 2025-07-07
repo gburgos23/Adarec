@@ -33,6 +33,12 @@ public partial class Order
     [Column("description")]
     public string Description { get; set; }
 
+    [Column("date_update", TypeName = "datetime")]
+    public DateTime? DateUpdate { get; set; }
+
+    [Column("user_update")]
+    public int? UserUpdate { get; set; }
+
     [InverseProperty("Order")]
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
