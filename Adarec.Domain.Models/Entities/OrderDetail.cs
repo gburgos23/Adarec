@@ -36,6 +36,9 @@ public partial class OrderDetail
     [Column("device_specs")]
     public string DeviceSpecs { get; set; }
 
+    [Column("date_updated", TypeName = "datetime")]
+    public DateTime? DateUpdated { get; set; }
+
     [ForeignKey("ItemStatusId")]
     [InverseProperty("OrderDetails")]
     public virtual ItemStatus ItemStatus { get; set; }

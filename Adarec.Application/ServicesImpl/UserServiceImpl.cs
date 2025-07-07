@@ -1,3 +1,4 @@
+using Adarec.Application.DTO.DTOs;
 using Adarec.Application.Services;
 using Adarec.Domain.Models.Abstractions;
 using Adarec.Domain.Models.Entities;
@@ -32,6 +33,11 @@ namespace Adarec.Application.ServicesImpl
         public async Task DeleteUserAsync(int userId)
         {
             await _userRepository.DeleteAsync(userId);
+        }
+
+        public async Task<List<TechnicianWorkloadDto>> GetTechnicianWorkloadAsync()
+        {
+            return await _userRepository.GetTechnicianWorkloadAsync();
         }
     }
 }

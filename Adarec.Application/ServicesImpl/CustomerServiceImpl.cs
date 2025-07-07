@@ -1,3 +1,4 @@
+using Adarec.Application.DTO.DTOs;
 using Adarec.Application.Services;
 using Adarec.Domain.Models.Abstractions;
 using Adarec.Domain.Models.Entities;
@@ -32,6 +33,11 @@ namespace Adarec.Application.ServicesImpl
         public async Task DeleteCustomerAsync(int customerId)
         {
             await _customerRepository.DeleteAsync(customerId);
+        }
+
+        public async Task<List<CustomerOrdersDto>> ListOrdersByCustomerAsync()
+        {
+            return await _customerRepository.ListOrdersByCustomerAsync();
         }
     }
 }

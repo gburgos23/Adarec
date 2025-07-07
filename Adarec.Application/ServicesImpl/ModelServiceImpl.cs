@@ -1,3 +1,4 @@
+using Adarec.Application.DTO.DTOs;
 using Adarec.Application.Services;
 using Adarec.Domain.Models.Abstractions;
 using Adarec.Domain.Models.Entities;
@@ -32,6 +33,11 @@ namespace Adarec.Application.ServicesImpl
         public async Task DeleteModelAsync(int modelId)
         {
             await _modelRepository.DeleteAsync(modelId);
+        }
+
+        public async Task<List<ModelDto>> GetActiveModelsAsync()
+        {
+            return await _modelRepository.GetActiveModelsAsync();
         }
     }
 }
