@@ -23,5 +23,22 @@ namespace Adarec.Infrastructure.DataAccess.Repository
 
             return result;
         }
+
+        public async Task<List<TechnicianDto>> GetAllUsersAsync()
+        {
+            var result = await context.Users
+                .Where(u => u.Status && u.Roles.Any())
+                .Select(u => new TechnicianDto
+                {
+                    TechnicianId = u.UserId,
+                    Name = u.Name,
+                    Email = u.Email,
+                    Status = u.Status,
+                    Password = u.Password,
+                    IdRol = u.Roles.Select(r => r.RoleId).ToList(), 
+                })
+                .ToListAsync();
+            return result;
+        }
     }
 }

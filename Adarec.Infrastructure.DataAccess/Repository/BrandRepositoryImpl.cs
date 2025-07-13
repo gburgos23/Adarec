@@ -7,9 +7,11 @@ namespace Adarec.Infrastructure.DataAccess.Repository
 {
     public class BrandRepositoryImpl(adarecContext context) : RepositoryImpl<Brand>(context), IBrandRepository
     {
+        private readonly adarecContext _context = context;
+
         public async Task<List<BrandDto>> GetActiveBrandsAsync()
         {
-            return await context.Brands
+            return await _context.Brands
                 .Where(b => b.Status)
                 .Select(b => new BrandDto
                 {

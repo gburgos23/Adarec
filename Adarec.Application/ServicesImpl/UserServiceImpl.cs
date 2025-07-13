@@ -3,6 +3,7 @@ using Adarec.Application.Services;
 using Adarec.Domain.Models.Abstractions;
 using Adarec.Domain.Models.Entities;
 using Adarec.Infrastructure.DataAccess.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adarec.Application.ServicesImpl
 {
@@ -10,29 +11,65 @@ namespace Adarec.Application.ServicesImpl
     {
         private readonly IUserRepository _userRepository = new UserRepositoryImpl(context);
 
-        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        public async Task<List<TechnicianDto>> GetAllUsersAsync()
         {
-            return await _userRepository.GetAllAsync();
+            return await _userRepository.GetAllUsersAsync();
         }
 
-        public async Task<User?> GetUserByIdAsync(int userId)
+        public async Task AddUserAsync(TechnicianDto user)
         {
-            return await _userRepository.GetByIdAsync(userId);
+            var userEntity = new User
+            {
+                Name = user.Name,
+                Email = user.Email,
+                Password = user.Password,
+                Status = user.Status
+            };
+
+            // Asignar rol (uno solo)
+            if (user.IdRol != null && user.IdRol.Count > 0)
+            {
+                foreach (var roleId in user.IdRol)
+                {
+                    var role = await context.Roles.FindAsync(roleId);
+                    if (role != null)
+                    {
+                        userEntity.Roles.Add(role);
+                    }
+                }
+            }
+
+            await _userRepository.AddAsync(userEntity);
         }
 
-        public async Task AddUserAsync(User user)
+        public async Task UpdateUserAsync(TechnicianDto user)
         {
-            await _userRepository.AddAsync(user);
-        }
+            var userEntity = await context.Users
+                .Include(u => u.Roles)
+                .FirstOrDefaultAsync(u => u.UserId == user.TechnicianId) ?? throw new Exception("Usuario no encontrado");
 
-        public async Task UpdateUserAsync(User user)
-        {
-            await _userRepository.UpdateAsync(user);
-        }
+            userEntity.Name = user.Name;
+            userEntity.Email = user.Email;
+            userEntity.Password = user.Password;
+            userEntity.Status = user.Status;
 
-        public async Task DeleteUserAsync(int userId)
-        {
-            await _userRepository.DeleteAsync(userId);
+            // Limpiar roles actuales
+            userEntity.Roles.Clear();
+
+            // Asignar nuevos roles sin duplicados
+            if (user.IdRol != null && user.IdRol.Count > 0)
+            {
+                foreach (var roleId in user.IdRol.Distinct())
+                {
+                    var role = await context.Roles.FindAsync(roleId);
+                    if (role != null)
+                    {
+                        userEntity.Roles.Add(role);
+                    }
+                }
+            }
+
+            await _userRepository.UpdateAsync(userEntity);
         }
 
         public async Task<List<TechnicianWorkloadDto>> GetTechnicianWorkloadAsync()

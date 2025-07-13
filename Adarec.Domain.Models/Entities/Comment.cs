@@ -21,7 +21,7 @@ public partial class Comment
     public int OrderId { get; set; }
 
     [Column("user_id")]
-    public int UserId { get; set; }
+    public int? UserId { get; set; }
 
     [Required]
     [Column("comment")]

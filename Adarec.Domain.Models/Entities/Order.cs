@@ -11,18 +11,14 @@ namespace Adarec.Domain.Models.Entities;
 [Table("orders")]
 [Index("CustomerId", Name = "IX_orders_customer_id")]
 [Index("OrderStatusId", Name = "IX_orders_order_status_id")]
-[Index("RequestedBy", Name = "IX_orders_requested_by")]
 public partial class Order
 {
     [Key]
     [Column("order_id")]
-    public int OrderId { get; set; }
+    public int? OrderId { get; set; }
 
     [Column("customer_id")]
     public int CustomerId { get; set; }
-
-    [Column("requested_by")]
-    public int RequestedBy { get; set; }
 
     [Column("order_status_id")]
     public int OrderStatusId { get; set; }
@@ -55,10 +51,6 @@ public partial class Order
     [ForeignKey("OrderStatusId")]
     [InverseProperty("Orders")]
     public virtual OrderStatus OrderStatus { get; set; }
-
-    [ForeignKey("RequestedBy")]
-    [InverseProperty("Orders")]
-    public virtual User RequestedByNavigation { get; set; }
 
     [InverseProperty("Order")]
     public virtual ICollection<Solution> Solutions { get; set; } = new List<Solution>();

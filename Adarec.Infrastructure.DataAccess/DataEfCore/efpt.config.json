@@ -3,7 +3,7 @@
    "ContextClassName": "adarecContext",
    "ContextNamespace": null,
    "FilterSchemas": false,
-   "IncludeConnectionString": true,
+   "IncludeConnectionString": false,
    "ModelNamespace": null,
    "OutputContextPath": null,
    "OutputPath": "C:\\Users\\USER\\source\\repos\\Adarec\\Adarec.Domain.Models\\Entities",

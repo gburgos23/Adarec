@@ -10,29 +10,26 @@ namespace Adarec.Application.ServicesImpl
     {
         private readonly IDeviceTypeRepository _deviceTypeRepository = new DeviceTypeRepositoryImpl(context);
 
-        public async Task<IEnumerable<DeviceType>> GetAllDeviceTypesAsync()
+        public async Task AddDeviceTypeAsync(DeviceTypeDto data)
         {
-            return await _deviceTypeRepository.GetAllAsync();
-        }
+            var deviceType = new DeviceType
+            {
+                Name = data.Name,
+                Status = data.Status
+            };
 
-        public async Task<DeviceType?> GetDeviceTypeByIdAsync(int deviceTypeId)
-        {
-            return await _deviceTypeRepository.GetByIdAsync(deviceTypeId);
-        }
-
-        public async Task AddDeviceTypeAsync(DeviceType deviceType)
-        {
             await _deviceTypeRepository.AddAsync(deviceType);
         }
 
-        public async Task UpdateDeviceTypeAsync(DeviceType deviceType)
+        public async Task UpdateDeviceTypeAsync(DeviceTypeDto data)
         {
+            var deviceType = new DeviceType
+            {
+                DeviceTypeId = data.DeviceTypeId,
+                Name = data.Name,
+                Status = data.Status
+            };
             await _deviceTypeRepository.UpdateAsync(deviceType);
-        }
-
-        public async Task DeleteDeviceTypeAsync(int deviceTypeId)
-        {
-            await _deviceTypeRepository.DeleteAsync(deviceTypeId);
         }
 
         public async Task<List<DeviceTypeDto>> GetActiveDeviceTypesAsync()

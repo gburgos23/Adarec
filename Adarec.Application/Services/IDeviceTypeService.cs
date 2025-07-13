@@ -8,20 +8,11 @@ namespace Adarec.Application.Services
     public interface IDeviceTypeService
     {
         [OperationContract]
-        Task<IEnumerable<DeviceType>> GetAllDeviceTypesAsync();
+        Task AddDeviceTypeAsync(DeviceTypeDto data);
 
         [OperationContract]
-        Task<DeviceType?> GetDeviceTypeByIdAsync(int deviceTypeId);
-
-        [OperationContract]
-        Task AddDeviceTypeAsync(DeviceType deviceType);
-
-        [OperationContract]
-        Task UpdateDeviceTypeAsync(DeviceType deviceType);
-
-        [OperationContract]
-        Task DeleteDeviceTypeAsync(int deviceTypeId);
-
+        Task UpdateDeviceTypeAsync(DeviceTypeDto data);
+    
         [OperationContract]
         Task<List<DeviceTypeDto>> GetActiveDeviceTypesAsync();
     }

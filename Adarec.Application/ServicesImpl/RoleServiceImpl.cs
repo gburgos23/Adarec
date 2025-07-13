@@ -1,3 +1,4 @@
+using Adarec.Application.DTO.DTOs;
 using Adarec.Application.Services;
 using Adarec.Domain.Models.Abstractions;
 using Adarec.Domain.Models.Entities;
@@ -9,29 +10,30 @@ namespace Adarec.Application.ServicesImpl
     {
         private readonly IRoleRepository _roleRepository = new RoleRepositoryImpl(context);
 
-        public async Task<IEnumerable<Role>> GetAllRolesAsync()
+        public async Task<List<RolDto>> GetAllRolesAsync()
         {
             return await _roleRepository.GetAllAsync();
         }
 
-        public async Task<Role?> GetRoleByIdAsync(int roleId)
+        public async Task AddRoleAsync(RolDto role)
         {
-            return await _roleRepository.GetByIdAsync(roleId);
+            var entity = new Role
+            {
+                Name = role.Name,
+                Status = role.Status
+            };
+            await _roleRepository.AddAsync(entity);
         }
 
-        public async Task AddRoleAsync(Role role)
+        public async Task UpdateRoleAsync(RolDto role)
         {
-            await _roleRepository.AddAsync(role);
-        }
-
-        public async Task UpdateRoleAsync(Role role)
-        {
-            await _roleRepository.UpdateAsync(role);
-        }
-
-        public async Task DeleteRoleAsync(int roleId)
-        {
-            await _roleRepository.DeleteAsync(roleId);
+            var entity = new Role
+            {
+                RoleId = role.RolId,
+                Name = role.Name,
+                Status = role.Status
+            };
+            await _roleRepository.UpdateAsync(entity);
         }
     }
 }

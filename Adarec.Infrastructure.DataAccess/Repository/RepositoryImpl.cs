@@ -20,6 +20,7 @@ namespace Adarec.Infrastructure.DataAccess.Repository
             try
             {
                 await _dbSet.AddAsync(entity);
+                await _context.SaveChangesAsync();
                 Console.WriteLine($"Entity of type {typeof(T).Name} added successfully.");
             }
             catch (Exception ex)
@@ -32,14 +33,12 @@ namespace Adarec.Infrastructure.DataAccess.Repository
         {
             try
             {
-                await Task.Run(() =>
+                var entity = await _dbSet.FindAsync(id);
+                if (entity != null)
                 {
-                    var entity = _dbSet.Find(id);
-                    if (entity != null)
-                    {
-                        _dbSet.Remove(entity);
-                    }
-                });
+                    _dbSet.Remove(entity);
+                    await _context.SaveChangesAsync();
+                }
             }
             catch (Exception ex)
             {

@@ -1,3 +1,4 @@
+using Adarec.Application.DTO.DTOs;
 using Adarec.Domain.Models.Entities;
 using System.ServiceModel;
 
@@ -7,18 +8,12 @@ namespace Adarec.Application.Services
     public interface IRoleService
     {
         [OperationContract]
-        Task<IEnumerable<Role>> GetAllRolesAsync();
+        Task<List<RolDto>> GetAllRolesAsync();
 
         [OperationContract]
-        Task<Role?> GetRoleByIdAsync(int roleId);
+        Task AddRoleAsync(RolDto role);
 
         [OperationContract]
-        Task AddRoleAsync(Role role);
-
-        [OperationContract]
-        Task UpdateRoleAsync(Role role);
-
-        [OperationContract]
-        Task DeleteRoleAsync(int roleId);
+        Task UpdateRoleAsync(RolDto role);
     }
 }

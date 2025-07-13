@@ -22,7 +22,7 @@ public partial class OrderDetail
     public int OrderId { get; set; }
 
     [Column("model_id")]
-    public int ModelId { get; set; }
+    public int? ModelId { get; set; }
 
     [Column("quantity")]
     public int Quantity { get; set; }
@@ -31,7 +31,7 @@ public partial class OrderDetail
     public string IntakePhoto { get; set; }
 
     [Column("item_status_id")]
-    public int ItemStatusId { get; set; }
+    public int? ItemStatusId { get; set; }
 
     [Column("device_specs")]
     public string DeviceSpecs { get; set; }

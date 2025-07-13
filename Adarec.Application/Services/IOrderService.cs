@@ -9,19 +9,10 @@ namespace Adarec.Application.Services
     public interface IOrderService
     {
         [OperationContract]
-        Task<IEnumerable<Order>> GetAllOrdersAsync();
+        Task<int> AddOrderAsync(OrderDto order);
 
         [OperationContract]
-        Task<Order?> GetOrderByIdAsync(int orderId);
-
-        [OperationContract]
-        Task AddOrderAsync(Order order);
-
-        [OperationContract]
-        Task UpdateOrderAsync(Order order);
-
-        [OperationContract]
-        Task DeleteOrderAsync(int orderId);
+        Task UpdateOrderAsync(OrderDto order);
 
         [OperationContract]
         Task<List<TechnicianPendingOrdersDto>> ListPendingOrdersByTechnicianAsync();

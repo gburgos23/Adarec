@@ -14,7 +14,7 @@ public partial class Brand
 {
     [Key]
     [Column("brand_id")]
-    public int BrandId { get; set; }
+    public int? BrandId { get; set; }
 
     [Required]
     [Column("name")]

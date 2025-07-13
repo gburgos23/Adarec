@@ -7,9 +7,11 @@ namespace Adarec.Infrastructure.DataAccess.Repository
 {
     public class DeviceTypeRepositoryImpl(adarecContext context) : RepositoryImpl<DeviceType>(context), IDeviceTypeRepository
     {
+        private readonly adarecContext _context = context;
+
         public async Task<List<DeviceTypeDto>> GetActiveDeviceTypesAsync()
         {
-            return await context.DeviceTypes
+            return await _context.DeviceTypes
                 .Where(dt => dt.Status)
                 .Select(dt => new DeviceTypeDto
                 {

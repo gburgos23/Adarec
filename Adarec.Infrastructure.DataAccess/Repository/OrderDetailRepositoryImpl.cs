@@ -7,17 +7,19 @@ namespace Adarec.Infrastructure.DataAccess.Repository
 {
     public class OrderDetailRepositoryImpl(adarecContext context) : RepositoryImpl<OrderDetail>(context), IOrderDetailRepository
     {
+        private readonly adarecContext _context = context;
+
         public async Task<List<PendingOrderFullDetailDto>> GetAllPendingOrdersWithDetailsAsync()
         {
             var result = await (
-                from o in context.Orders
+                from o in _context.Orders
                 where o.OrderStatusId != 3 // 3 = Finalizado
-                join c in context.Customers on o.CustomerId equals c.CustomerId
-                join os in context.OrderStatuses on o.OrderStatusId equals os.OrderStatusId
+                join c in _context.Customers on o.CustomerId equals c.CustomerId
+                join os in _context.OrderStatuses on o.OrderStatusId equals os.OrderStatusId
                 // Técnico asignado (última asignación)
-                join oa in context.OrderAssignments on o.OrderId equals oa.OrderId into oaGroup
+                join oa in _context.OrderAssignments on o.OrderId equals oa.OrderId into oaGroup
                 from oa in oaGroup.OrderByDescending(x => x.AssignedAt).Take(1).DefaultIfEmpty()
-                join t in context.Users on oa.TechnicianId equals t.UserId into tGroup
+                join t in _context.Users on oa.TechnicianId equals t.UserId into tGroup
                 from t in tGroup.DefaultIfEmpty()
                 select new PendingOrderFullDetailDto
                 {

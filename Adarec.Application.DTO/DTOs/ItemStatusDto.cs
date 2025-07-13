@@ -8,7 +8,7 @@ namespace Adarec.Application.DTO.DTOs
 {
     public class ItemStatusDto
     {
-        public int DetailId { get; set; }
+        public int? DetailId { get; set; }
         public string ItemStatus { get; set; }
         public DateTime StatusChangedAt { get; set; }
     }

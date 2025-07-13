@@ -8,19 +8,13 @@ namespace Adarec.Application.Services
     public interface IUserService
     {
         [OperationContract]
-        Task<IEnumerable<User>> GetAllUsersAsync();
+        Task<List<TechnicianDto>> GetAllUsersAsync();
 
         [OperationContract]
-        Task<User?> GetUserByIdAsync(int userId);
+        Task AddUserAsync(TechnicianDto user);
 
         [OperationContract]
-        Task AddUserAsync(User user);
-
-        [OperationContract]
-        Task UpdateUserAsync(User user);
-
-        [OperationContract]
-        Task DeleteUserAsync(int userId);
+        Task UpdateUserAsync(TechnicianDto user);
 
         [OperationContract]
         Task<List<TechnicianWorkloadDto>> GetTechnicianWorkloadAsync();

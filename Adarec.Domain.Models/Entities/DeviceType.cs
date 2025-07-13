@@ -14,7 +14,7 @@ public partial class DeviceType
 {
     [Key]
     [Column("device_type_id")]
-    public int DeviceTypeId { get; set; }
+    public int? DeviceTypeId { get; set; }
 
     [Required]
     [Column("name")]

@@ -10,29 +10,25 @@ namespace Adarec.Application.ServicesImpl
     {
         private readonly IBrandRepository _brandRepository = new BrandRepositoryImpl(context);
 
-        public async Task<IEnumerable<Brand>> GetAllBrandsAsync()
+        public async Task AddBrandAsync(BrandDto brand)
         {
-            return await _brandRepository.GetAllAsync();
+            var brandEntity = new Brand
+            {
+                Name = brand.Name,
+                Status = brand.Status
+            };
+            await _brandRepository.AddAsync(brandEntity);
         }
 
-        public async Task<Brand?> GetBrandByIdAsync(int brandId)
+        public async Task UpdateBrandAsync(BrandDto brand)
         {
-            return await _brandRepository.GetByIdAsync(brandId);
-        }
-
-        public async Task AddBrandAsync(Brand brand)
-        {
-            await _brandRepository.AddAsync(brand);
-        }
-
-        public async Task UpdateBrandAsync(Brand brand)
-        {
-            await _brandRepository.UpdateAsync(brand);
-        }
-
-        public async Task DeleteBrandAsync(int brandId)
-        {
-            await _brandRepository.DeleteAsync(brandId);
+            var brandEntity = new Brand
+            {
+                BrandId = brand.BrandId,
+                Name = brand.Name,
+                Status = brand.Status
+            };
+            await _brandRepository.AddAsync(brandEntity);
         }
 
         public async Task<List<BrandDto>> GetActiveBrandsAsync()

@@ -5,6 +5,10 @@ namespace Adarec.Domain.Models.Abstractions
 {
     public interface IOrderRepository : IRepository<Order>
     {
+        Task<int> AddOrderAsync(OrderDto order);
+
+        Task UpdateOrderAsync(OrderDto order);
+
         Task<List<TechnicianPendingOrdersDto>> ListPendingOrdersByTechnicianAsync();
 
         Task<OrderFullDetailDto?> GetOrderDetailByIdAsync(int orderId);
@@ -13,6 +17,6 @@ namespace Adarec.Domain.Models.Abstractions
 
         Task<List<TicketCountByStatusDto>> GetTicketCountByStatusAsync(int year, int month, int? technicianId = null);
 
-        Task<List<SolutionDetailDto>> GetSolutionsByOrderAsync(int orderId);      
+        Task<List<SolutionDetailDto>> GetSolutionsByOrderAsync(int orderId);
     }
 }

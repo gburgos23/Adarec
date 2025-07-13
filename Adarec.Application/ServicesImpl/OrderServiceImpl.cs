@@ -3,36 +3,23 @@ using Adarec.Application.Services;
 using Adarec.Domain.Models.Abstractions;
 using Adarec.Domain.Models.Entities;
 using Adarec.Infrastructure.DataAccess.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adarec.Application.ServicesImpl
 {
     public class OrderServiceImpl(adarecContext context) : IOrderService
     {
+        private readonly adarecContext _context = context;
         private readonly IOrderRepository _orderRepository = new OrderRepositoryImpl(context);
 
-        public async Task<IEnumerable<Order>> GetAllOrdersAsync()
+        public async Task<int> AddOrderAsync(OrderDto orderDto)
         {
-            return await _orderRepository.GetAllAsync();
+            return await _orderRepository.AddOrderAsync(orderDto);
         }
 
-        public async Task<Order?> GetOrderByIdAsync(int orderId)
+        public async Task UpdateOrderAsync(OrderDto orderDto)
         {
-            return await _orderRepository.GetByIdAsync(orderId);
-        }
-
-        public async Task AddOrderAsync(Order order)
-        {
-            await _orderRepository.AddAsync(order);
-        }
-
-        public async Task UpdateOrderAsync(Order order)
-        {
-            await _orderRepository.UpdateAsync(order);
-        }
-
-        public async Task DeleteOrderAsync(int orderId)
-        {
-            await _orderRepository.DeleteAsync(orderId);
+            await _orderRepository.UpdateOrderAsync(orderDto);
         }
 
         public async Task<List<TechnicianPendingOrdersDto>> ListPendingOrdersByTechnicianAsync()

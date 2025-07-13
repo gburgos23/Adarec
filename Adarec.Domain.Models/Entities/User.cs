@@ -43,9 +43,6 @@ public partial class User
     [InverseProperty("Technician")]
     public virtual ICollection<OrderAssignment> OrderAssignments { get; set; } = new List<OrderAssignment>();
 
-    [InverseProperty("RequestedByNavigation")]
-    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
-
     [ForeignKey("UserId")]
     [InverseProperty("Users")]
     public virtual ICollection<Role> Roles { get; set; } = new List<Role>();

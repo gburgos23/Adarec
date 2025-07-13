@@ -8,19 +8,10 @@ namespace Adarec.Application.Services
     public interface IBrandService
     {
         [OperationContract]
-        Task<IEnumerable<Brand>> GetAllBrandsAsync();
+        Task AddBrandAsync(BrandDto brand);
 
         [OperationContract]
-        Task<Brand?> GetBrandByIdAsync(int brandId);
-
-        [OperationContract]
-        Task AddBrandAsync(Brand brand);
-
-        [OperationContract]
-        Task UpdateBrandAsync(Brand brand);
-
-        [OperationContract]
-        Task DeleteBrandAsync(int brandId);
+        Task UpdateBrandAsync(BrandDto brand);
 
         [OperationContract]
         Task<List<BrandDto>> GetActiveBrandsAsync();

@@ -7,9 +7,11 @@ namespace Adarec.Infrastructure.DataAccess.Repository
 {
     public class ModelRepositoryImpl(adarecContext context) : RepositoryImpl<Model>(context), IModelRepository
     {
+        private readonly adarecContext _context = context;
+
         public async Task<List<ModelDto>> GetActiveModelsAsync()
         {
-            return await context.Models
+            return await _context.Models
                 .Where(m => m.Status)
                 .Select(m => new ModelDto
                 {
