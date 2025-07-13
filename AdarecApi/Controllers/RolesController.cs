@@ -14,6 +14,23 @@ namespace AdarecApi.Controllers
         /// <summary>
         /// Obtiene todos los roles.
         /// </summary>
+        /// <remarks>
+        /// Devuelve una lista de todos los roles registrados en el sistema.
+        /// 
+        /// <b>Ejemplo de respuesta:</b>
+        /// [
+        ///   {
+        ///     "rolId": 1,
+        ///     "name": "Administrador",
+        ///     "status": true
+        ///   },
+        ///   {
+        ///     "rolId": 2,
+        ///     "name": "Técnico",
+        ///     "status": true
+        ///   }
+        /// ]
+        /// </remarks>
         /// <response code="200">Lista de roles encontrada.</response>
         /// <response code="404">No se encontraron roles.</response>
         [HttpGet]
@@ -36,7 +53,16 @@ namespace AdarecApi.Controllers
         /// <summary>
         /// Agrega un nuevo rol.
         /// </summary>
-        /// <param name="role">Objeto Role con los datos del rol a agregar.</param>
+        /// <remarks>
+        /// Crea un nuevo rol en el sistema. El campo <c>rolId</c> debe ser nulo.
+        /// 
+        /// <b>Ejemplo de body:</b>
+        /// {
+        ///   "name": "Supervisor",
+        ///   "status": true
+        /// }
+        /// </remarks>
+        /// <param name="role">Objeto RolDto con los datos del rol a agregar.</param>
         /// <response code="201">Rol agregado exitosamente.</response>
         /// <response code="400">Datos de rol inválidos.</response>
         /// <response code="500">Error interno al agregar el rol.</response>
@@ -64,7 +90,17 @@ namespace AdarecApi.Controllers
         /// <summary>
         /// Actualiza un rol existente.
         /// </summary>
-        /// <param name="role">Objeto Role con los datos del rol a actualizar.</param>
+        /// <remarks>
+        /// Actualiza los datos de un rol existente. El campo <c>rolId</c> debe ser mayor a 0.
+        /// 
+        /// <b>Ejemplo de body:</b>
+        /// {
+        ///   "rolId": 2,
+        ///   "name": "Técnico Senior",
+        ///   "status": true
+        /// }
+        /// </remarks>
+        /// <param name="role">Objeto RolDto con los datos del rol a actualizar.</param>
         /// <response code="200">Rol actualizado exitosamente.</response>
         /// <response code="400">Datos de rol inválidos.</response>
         /// <response code="500">Error interno al actualizar el rol.</response>

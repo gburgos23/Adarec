@@ -8,16 +8,10 @@ namespace Adarec.Application.Services
     public interface ICommentService
     {
         [OperationContract]
-        Task<IEnumerable<Comment>> GetAllCommentsAsync();
+        Task AddCommentAsync(OrderCommentsDto comment);
 
         [OperationContract]
-        Task<Comment?> GetCommentByIdAsync(int commentId);
-
-        [OperationContract]
-        Task AddCommentAsync(Comment comment);
-
-        [OperationContract]
-        Task UpdateCommentAsync(Comment comment);
+        Task UpdateCommentAsync(OrderCommentsDto comment);
 
         [OperationContract]
         Task DeleteCommentAsync(int commentId);
