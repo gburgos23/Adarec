@@ -14,7 +14,7 @@ public partial class Role
 {
     [Key]
     [Column("role_id")]
-    public int RoleId { get; set; }
+    public int? RoleId { get; set; }
 
     [Required]
     [Column("name")]

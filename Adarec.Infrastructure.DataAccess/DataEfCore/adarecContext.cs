@@ -131,10 +131,6 @@ public partial class adarecContext : DbContext
             entity.HasOne(d => d.OrderStatus).WithMany(p => p.Orders)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_orders_status");
-
-            entity.HasOne(d => d.RequestedByNavigation).WithMany(p => p.Orders)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_orders_user");
         });
 
         modelBuilder.Entity<OrderAssignment>(entity =>

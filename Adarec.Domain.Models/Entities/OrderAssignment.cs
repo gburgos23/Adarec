@@ -21,7 +21,7 @@ public partial class OrderAssignment
     public int OrderId { get; set; }
 
     [Column("technician_id")]
-    public int TechnicianId { get; set; }
+    public int? TechnicianId { get; set; }
 
     [Column("assigned_at")]
     public DateTime AssignedAt { get; set; }

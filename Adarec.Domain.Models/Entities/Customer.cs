@@ -22,7 +22,7 @@ public partial class Customer
     public string Name { get; set; }
 
     [Column("identification_type_id")]
-    public int IdentificationTypeId { get; set; }
+    public int? IdentificationTypeId { get; set; }
 
     [Required]
     [Column("identification_number")]

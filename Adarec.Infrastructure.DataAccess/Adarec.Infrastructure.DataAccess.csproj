@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Repository\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Adarec.Domain.Models\Adarec.Domain.Models.csproj" />
     <ProjectReference Include="..\Adarec.Domain.Services\Adarec.Domain.Services.csproj" />
   </ItemGroup>
