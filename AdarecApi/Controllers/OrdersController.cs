@@ -17,7 +17,6 @@ namespace AdarecApi.Controllers
         /// Crea una nueva orden en el sistema. El campo <c>OrderId</c> debe ser nulo.
         /// 
         /// <b>Ejemplo de body:</b>
-        /// <code>
         /// {
         ///   "description": "Instalación de impresora multifunción",
         ///   "scheduledFor": "2025-07-15T09:00:00Z",
@@ -44,7 +43,6 @@ namespace AdarecApi.Controllers
         ///     "userId": 2
         ///   }
         /// }
-        /// </code>
         /// </remarks>
         /// <param name="order">Objeto OrderDto con los datos de la orden a agregar.</param>
         /// <response code="201">Orden agregada exitosamente.</response>
@@ -80,7 +78,6 @@ namespace AdarecApi.Controllers
         /// Actualiza los datos de una orden existente. El campo <c>OrderId</c> debe ser mayor a 0.
         /// 
         /// <b>Ejemplo de body:</b>
-        /// <code>
         /// {
         ///   "orderId": 25,
         ///   "description": "Instalación de impresora multifunción y configuración de red",
@@ -112,7 +109,6 @@ namespace AdarecApi.Controllers
         ///     "createdAt": "2025-07-14T15:00:00Z"
         ///   }
         /// }
-        /// </code>
         /// </remarks>
         /// <param name="order">Objeto OrderFullDetailDto con los datos de la orden a actualizar.</param>
         /// <response code="200">Orden actualizada exitosamente.</response>

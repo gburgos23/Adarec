@@ -17,7 +17,6 @@ namespace AdarecApi.Controllers
         /// Crea un nuevo comentario para una orden existente. El campo <c>CommentId</c> debe ser nulo.
         ///
         /// <b>Ejemplo de body:</b>
-        /// <code>
         /// {
         ///   "orderId": 25,
         ///   "comments": [
@@ -28,7 +27,6 @@ namespace AdarecApi.Controllers
         ///     }
         ///   ]
         /// }
-        /// </code>
         /// </remarks>
         /// <param name="comment">Objeto OrderCommentsDto con los datos del comentario a agregar.</param>
         /// <response code="201">Comentario agregado exitosamente.</response>
@@ -63,7 +61,6 @@ namespace AdarecApi.Controllers
         /// Actualiza los datos de un comentario existente. El campo <c>CommentId</c> debe ser mayor a 0.
         ///
         /// <b>Ejemplo de body:</b>
-        /// <code>
         /// {
         ///   "orderId": 25,
         ///   "comments": [
@@ -75,7 +72,6 @@ namespace AdarecApi.Controllers
         ///     }
         ///   ]
         /// }
-        /// </code>
         /// </remarks>
         /// <param name="comment">Objeto OrderCommentsDto con los datos del comentario a actualizar.</param>
         /// <response code="200">Comentario actualizado exitosamente.</response>
