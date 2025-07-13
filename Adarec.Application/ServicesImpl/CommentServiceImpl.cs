@@ -10,24 +10,14 @@ namespace Adarec.Application.ServicesImpl
     {
         private readonly ICommentRepository _commentRepository = new CommentRepositoryImpl(context);
 
-        public async Task<IEnumerable<Comment>> GetAllCommentsAsync()
+        public async Task AddCommentAsync(OrderCommentsDto comment)
         {
-            return await _commentRepository.GetAllAsync();
+            await _commentRepository.AddCommentAsync(comment);
         }
 
-        public async Task<Comment?> GetCommentByIdAsync(int commentId)
+        public async Task UpdateCommentAsync(OrderCommentsDto comment)
         {
-            return await _commentRepository.GetByIdAsync(commentId);
-        }
-
-        public async Task AddCommentAsync(Comment comment)
-        {
-            await _commentRepository.AddAsync(comment);
-        }
-
-        public async Task UpdateCommentAsync(Comment comment)
-        {
-            await _commentRepository.UpdateAsync(comment);
+            await _commentRepository.UpdateCommentAsync(comment);
         }
 
         public async Task DeleteCommentAsync(int commentId)

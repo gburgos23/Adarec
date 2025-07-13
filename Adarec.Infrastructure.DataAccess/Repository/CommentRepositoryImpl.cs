@@ -8,6 +8,44 @@ namespace Adarec.Infrastructure.DataAccess.Repository
     {
         private readonly adarecContext context = _context;
 
+        public async Task AddCommentAsync(OrderCommentsDto commentDto)
+        {
+            if (commentDto.Comments == null || commentDto.Comments.Count == 0)
+                throw new ArgumentException("No hay comentarios para agregar.");
+
+            var detail = commentDto.Comments.First();
+
+            var commentEntity = new Comment
+            {
+                OrderId = commentDto.OrderId ?? 0,
+                UserId = detail.UserId,
+                Comment1 = detail.Comment ?? string.Empty,
+                CreatedAt = detail.CreatedAt
+            };
+
+            await context.AddAsync(commentEntity);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task UpdateCommentAsync(OrderCommentsDto commentDto)
+        {
+            if (commentDto.Comments == null || commentDto.Comments.Count == 0)
+                throw new ArgumentException("No hay comentarios para actualizar.");
+
+            var detail = commentDto.Comments.First();
+
+            var commentEntity = await context.Comments.FindAsync(detail.CommentId);
+            if (commentEntity == null)
+                throw new InvalidOperationException("Comentario no encontrado.");
+
+            commentEntity.UserId = detail.UserId;
+            commentEntity.Comment1 = detail.Comment ?? string.Empty;
+            commentEntity.CreatedAt = detail.CreatedAt;
+
+            context.Comments.Update(commentEntity);
+            await context.SaveChangesAsync();
+        }
+
         async Task<List<OrderCommentsDto>> ICommentRepository.ListCommentsByOrderAsync()
         {
             try

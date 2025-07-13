@@ -12,23 +12,12 @@ namespace Adarec.Application.ServicesImpl
 
         public async Task AddBrandAsync(BrandDto brand)
         {
-            var brandEntity = new Brand
-            {
-                Name = brand.Name,
-                Status = brand.Status
-            };
-            await _brandRepository.AddAsync(brandEntity);
+            await _brandRepository.AddBrandAsync(brand);
         }
 
         public async Task UpdateBrandAsync(BrandDto brand)
         {
-            var brandEntity = new Brand
-            {
-                BrandId = brand.BrandId,
-                Name = brand.Name,
-                Status = brand.Status
-            };
-            await _brandRepository.AddAsync(brandEntity);
+            await _brandRepository.UpdateBrandAsync(brand);
         }
 
         public async Task<List<BrandDto>> GetActiveBrandsAsync()
