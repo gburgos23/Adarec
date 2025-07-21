@@ -7,22 +7,11 @@ namespace Adarec.Infrastructure.DataAccess.Repository
 {
     public class RoleRepositoryImpl(adarecContext context) : RepositoryImpl<Role>(context), IRoleRepository
     {
-        public async Task<List<RolDto>> GetAllAsync()
+        private readonly adarecContext _context = context;
+
+        public async Task<List<Role>> GetAllRolesAsync()
         {
-            try
-            {
-                return await context.Roles
-                    .Select(role => new RolDto
-                    {
-                        RolId = role.RoleId,
-                        Name = role.Name,
-                        Status = role.Status
-                    }).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error retrieving roles: {ex.Message}");
-            }
+            return await _context.Roles.ToListAsync();
         }
     }
 }

@@ -12,7 +12,14 @@ namespace Adarec.Application.ServicesImpl
 
         public async Task<List<RolDto>> GetAllRolesAsync()
         {
-            return await _roleRepository.GetAllAsync();
+            var roles = await _roleRepository.GetAllRolesAsync();
+
+            return roles.Select(role => new RolDto
+            {
+                RolId = role.RoleId,
+                Name = role.Name,
+                Status = role.Status
+            }).ToList();
         }
 
         public async Task AddRoleAsync(RolDto role)

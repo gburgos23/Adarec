@@ -5,6 +5,7 @@ namespace Adarec.Domain.Models.Abstractions
 {
     public interface ICustomerRepository : IRepository<Customer>
     {
-        Task<List<CustomerOrdersDto>> ListOrdersByCustomerAsync();
+        Task<List<Customer>> GetAllCustomersAsync();
+        Task<List<Customer>> ListOrdersByCustomerAsync();
     }
 }

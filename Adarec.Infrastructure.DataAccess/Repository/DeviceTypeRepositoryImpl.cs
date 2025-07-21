@@ -9,15 +9,11 @@ namespace Adarec.Infrastructure.DataAccess.Repository
     {
         private readonly adarecContext _context = context;
 
-        public async Task<List<DeviceTypeDto>> GetActiveDeviceTypesAsync()
+        public async Task<List<DeviceType>> GetActiveDeviceTypesAsync()
         {
             return await _context.DeviceTypes
                 .Where(dt => dt.Status)
-                .Select(dt => new DeviceTypeDto
-                {
-                    DeviceTypeId = dt.DeviceTypeId,
-                    Name = dt.Name
-                }).ToListAsync();
+                .ToListAsync();
         }
     }
 }

@@ -5,18 +5,20 @@ namespace Adarec.Domain.Models.Abstractions
 {
     public interface IOrderRepository : IRepository<Order>
     {
-        Task<int> AddOrderAsync(OrderDto order);
+        Task<int> AddOrderAsync(Order order);
 
-        Task UpdateOrderAsync(OrderDto order);
+        Task UpdateOrderAsync(Order order);
 
-        Task<List<TechnicianPendingOrdersDto>> ListPendingOrdersByTechnicianAsync();
+        Task<List<Order>> ListPendingOrdersByTechnicianAsync();
 
-        Task<OrderFullDetailDto?> GetOrderDetailByIdAsync(int orderId);
+        Task<Order?> GetOrderDetailByIdAsync(int orderId);
 
-        Task<List<OrderFullDetailDto>> GetOrderDetailByCustomerDocumentAsync(string identificationNumber);
+        Task<List<Order>> GetAllOrders();
 
-        Task<List<TicketCountByStatusDto>> GetTicketCountByStatusAsync(int year, int month, int? technicianId = null);
+        Task<List<Order>> GetTicketCountByStatusAsync(int year, int month, int? technicianId = null);
 
-        Task<List<SolutionDetailDto>> GetSolutionsByOrderAsync(int orderId);
+        Task<Order?> GetOrderStatusHistoryAsync(int orderId);
+
+        Task<List<Solution>> GetSolutionsByOrderAsync(int orderId);
     }
 }

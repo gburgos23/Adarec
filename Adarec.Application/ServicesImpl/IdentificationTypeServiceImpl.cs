@@ -1,3 +1,4 @@
+using Adarec.Application.DTO.DTOs;
 using Adarec.Application.Services;
 using Adarec.Domain.Models.Abstractions;
 using Adarec.Domain.Models.Entities;
@@ -9,29 +10,15 @@ namespace Adarec.Application.ServicesImpl
     {
         private readonly IIdentificationTypeRepository _identificationTypeRepository = new IdentificationTypeRepositoryImpl(context);
 
-        public async Task<IEnumerable<IdentificationType>> GetAllIdentificationTypesAsync()
+        public async Task<List<RolDto>> GetAllIdentificationTypesAsync()
         {
-            return await _identificationTypeRepository.GetAllAsync();
-        }
-
-        public async Task<IdentificationType?> GetIdentificationTypeByIdAsync(int identificationTypeId)
-        {
-            return await _identificationTypeRepository.GetByIdAsync(identificationTypeId);
-        }
-
-        public async Task AddIdentificationTypeAsync(IdentificationType identificationType)
-        {
-            await _identificationTypeRepository.AddAsync(identificationType);
-        }
-
-        public async Task UpdateIdentificationTypeAsync(IdentificationType identificationType)
-        {
-            await _identificationTypeRepository.UpdateAsync(identificationType);
-        }
-
-        public async Task DeleteIdentificationTypeAsync(int identificationTypeId)
-        {
-            await _identificationTypeRepository.DeleteAsync(identificationTypeId);
+            var result = await _identificationTypeRepository.GetAllAsync();
+            return [.. result.Select(x => new RolDto
+            {
+                RolId = x.IdentificationTypeId,
+                Name = x.Name,
+                Status = x.Status
+            })];
         }
     }
 }

@@ -5,6 +5,6 @@ namespace Adarec.Domain.Models.Abstractions
 {
     public interface IRoleRepository : IRepository<Role>
     {
-        Task<List<RolDto>> GetAllAsync();
+        Task<List<Role>> GetAllRolesAsync();
     }
 }

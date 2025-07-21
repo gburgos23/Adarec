@@ -15,13 +15,13 @@ namespace Adarec.Application.Services
         Task UpdateOrderAsync(OrderDto order);
 
         [OperationContract]
-        Task<List<TechnicianPendingOrdersDto>> ListPendingOrdersByTechnicianAsync();
+        Task<List<TechnicianPendingOrdersDto>> ListPendingOrdersByTechnicianAsync(int idTechnician);
 
         [OperationContract]
         Task<OrderFullDetailDto?> GetOrderDetailByIdAsync(int orderId);
 
         [OperationContract]
-        Task<List<OrderFullDetailDto>> GetOrderDetailByCustomerDocumentAsync(string identificationNumber);
+        Task<List<TechnicianPendingOrdersDto>> GetAllOrders();
 
         [OperationContract]
         Task<List<TicketCountByStatusDto>> GetTicketCountByStatusAsync(int year, int month, int? technicianId = null);

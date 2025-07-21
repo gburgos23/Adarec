@@ -4,6 +4,7 @@ using Adarec.Domain.Models.Abstractions;
 using Adarec.Domain.Models.Entities;
 using Adarec.Infrastructure.DataAccess.Repository;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Adarec.Application.ServicesImpl
 {
@@ -13,7 +14,31 @@ namespace Adarec.Application.ServicesImpl
 
         public async Task<List<TechnicianDto>> GetAllUsersAsync()
         {
-            return await _userRepository.GetAllUsersAsync();
+            var users = await _userRepository.GetAllUsersAsync();
+
+            return users.Select(u => new TechnicianDto
+            {
+                TechnicianId = u.UserId,
+                Name = u.Name,
+                Email = u.Email,
+                IdRol = u.Roles!.Select(r => r.RoleId).ToList()
+            }).Where(u => u.Status)
+            .ToList();
+        }
+
+        public async Task<TechnicianDto?> GetUserByMail(string mail)
+        {
+            var users = await _userRepository.GetAllUsersAsync();
+
+            return (users.Select(u => new TechnicianDto
+            {
+                TechnicianId = u.UserId,
+                Name = u.Name,
+                Email = u.Email,
+                Password = u.Password,
+                IdRol = [.. u.Roles!.Select(r => r.RoleId)]
+            }).Where(u => u.Email.Equals(mail, StringComparison.OrdinalIgnoreCase) && u.Status))
+            .FirstOrDefault();
         }
 
         public async Task AddUserAsync(TechnicianDto user)
@@ -26,7 +51,7 @@ namespace Adarec.Application.ServicesImpl
                 Status = user.Status
             };
 
-            // Asignar rol (uno solo)
+            // Asignar roles
             if (user.IdRol != null && user.IdRol.Count > 0)
             {
                 foreach (var roleId in user.IdRol)
@@ -74,7 +99,14 @@ namespace Adarec.Application.ServicesImpl
 
         public async Task<List<TechnicianWorkloadDto>> GetTechnicianWorkloadAsync()
         {
-            return await _userRepository.GetTechnicianWorkloadAsync();
+            var technicians = await _userRepository.GetTechniciansAsync();
+
+            return technicians.Select(u => new TechnicianWorkloadDto
+            {
+                TechnicianId = u.UserId,
+                TechnicianName = u.Name,
+                AssignedOrdersCount = u.OrderAssignments?.Count() ?? 0
+            }).ToList();
         }
     }
 }

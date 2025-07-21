@@ -5,6 +5,6 @@ namespace Adarec.Domain.Models.Abstractions
 {
     public interface IDeviceTypeRepository : IRepository<DeviceType>
     {
-        Task<List<DeviceTypeDto>> GetActiveDeviceTypesAsync();
+        Task<List<DeviceType>> GetActiveDeviceTypesAsync();
     }
 }

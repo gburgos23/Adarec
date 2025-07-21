@@ -34,7 +34,14 @@ namespace Adarec.Application.ServicesImpl
 
         public async Task<List<DeviceTypeDto>> GetActiveDeviceTypesAsync()
         {
-            return await _deviceTypeRepository.GetActiveDeviceTypesAsync();
+            var deviceTypes = await _deviceTypeRepository.GetActiveDeviceTypesAsync();
+
+            return deviceTypes.Select(dt => new DeviceTypeDto
+            {
+                DeviceTypeId = dt.DeviceTypeId,
+                Name = dt.Name,
+                Status = dt.Status
+            }).ToList();
         }
     }
 }

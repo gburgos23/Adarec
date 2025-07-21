@@ -23,30 +23,12 @@ namespace TestAdarec
         }
 
         [Test]
-        public async Task TestPendingOrdersByTechnician()
-        {
-            var result = await _orderService.ListPendingOrdersByTechnicianAsync();
-            Console.WriteLine($"Resultado: {JsonConvert.SerializeObject(result)}");
-
-            Assert.Pass();
-        }
-
-        [Test]
         public async Task TestOrderDetailById()
         {
             var result = await _orderService.GetOrderDetailByIdAsync(1);
             Console.WriteLine($"Resultado: {JsonConvert.SerializeObject(result)}");
 
             Assert.Pass();
-        }
-
-        [Test]
-        public async Task TestOrderDetailByCustomerDocument()
-        {
-            var identificationNumber = "123456789"; // Usa un número válido de tu base de datos de pruebas
-            var result = await _orderService.GetOrderDetailByCustomerDocumentAsync(identificationNumber);
-            Console.WriteLine($"Resultado: {JsonConvert.SerializeObject(result)}");
-            Assert.IsNotNull(result);
         }
 
         [Test]

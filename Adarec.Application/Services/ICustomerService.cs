@@ -8,16 +8,13 @@ namespace Adarec.Application.Services
     public interface ICustomerService
     {
         [OperationContract]
-        Task<IEnumerable<Customer>> GetAllCustomersAsync();
+        Task<List<CustomerDetailDto>> GetAllCustomersAsync();
 
         [OperationContract]
-        Task<Customer?> GetCustomerByIdAsync(int customerId);
+        Task AddCustomerAsync(CustomerDetailDto customer);
 
         [OperationContract]
-        Task AddCustomerAsync(Customer customer);
-
-        [OperationContract]
-        Task UpdateCustomerAsync(Customer customer);
+        Task UpdateCustomerAsync(CustomerDetailDto customer);
 
         [OperationContract]
         Task DeleteCustomerAsync(int customerId);

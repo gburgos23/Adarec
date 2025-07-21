@@ -21,11 +21,10 @@ namespace Adarec.Infrastructure.DataAccess.Repository
             {
                 await _dbSet.AddAsync(entity);
                 await _context.SaveChangesAsync();
-                Console.WriteLine($"Entity of type {typeof(T).Name} added successfully.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error adding entity: {ex.Message}");
+                throw new Exception($"Error al agregar: {ex.InnerException}");
             }
         }
 
@@ -42,7 +41,7 @@ namespace Adarec.Infrastructure.DataAccess.Repository
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error deleting entity with ID {id}: {ex.Message}");
+                throw new Exception($"Error al eliminar (ID {id}): {ex.InnerException}");
             }
         }
 
@@ -54,7 +53,7 @@ namespace Adarec.Infrastructure.DataAccess.Repository
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error retrieving all entities: {ex.Message}");
+                throw new Exception($"Error al obtener todos: {ex.InnerException}");
             }
         }
 
@@ -66,7 +65,7 @@ namespace Adarec.Infrastructure.DataAccess.Repository
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error retrieving entity with ID {id}: {ex.Message}");
+                throw new Exception($"Error al obtener por ID {id}: {ex.InnerException}");
             }
         }
 
@@ -79,7 +78,7 @@ namespace Adarec.Infrastructure.DataAccess.Repository
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error updating entity: {ex.Message}");
+                throw new Exception($"Error al actualizar: {ex.InnerException}");
             }
         }
     }

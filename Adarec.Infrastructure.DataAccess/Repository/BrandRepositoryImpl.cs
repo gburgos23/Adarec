@@ -9,37 +9,23 @@ namespace Adarec.Infrastructure.DataAccess.Repository
     {
         private readonly adarecContext _context = context;
 
-        public async Task AddBrandAsync(BrandDto brand)
+        public async Task AddBrandAsync(Brand brand)
         {
-            var brandEntity = new Brand
-            {
-                Name = brand.Name,
-                Status = brand.Status
-            };
-            await _context.AddAsync(brandEntity);
+            await _context.AddAsync(brand);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateBrandAsync(BrandDto brand)
+        public async Task UpdateBrandAsync(Brand brand)
         {
-            var brandEntity = new Brand
-            {
-                BrandId = brand.BrandId,
-                Name = brand.Name,
-                Status = brand.Status
-            };
-            await _context.AddAsync(brandEntity);
+            _context.Brands.Update(brand);
+            await _context.SaveChangesAsync();
         }
 
-
-        public async Task<List<BrandDto>> GetActiveBrandsAsync()
+        public async Task<List<Brand>> GetActiveBrandsAsync()
         {
             return await _context.Brands
                 .Where(b => b.Status)
-                .Select(b => new BrandDto
-                {
-                    BrandId = b.BrandId,
-                    Name = b.Name
-                }).ToListAsync();
+                .ToListAsync();
         }
     }
 }

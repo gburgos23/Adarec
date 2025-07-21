@@ -10,34 +10,121 @@ namespace Adarec.Application.ServicesImpl
     {
         private readonly ICustomerRepository _customerRepository = new CustomerRepositoryImpl(context);
 
-        public async Task<IEnumerable<Customer>> GetAllCustomersAsync()
+        public async Task<List<CustomerDetailDto>> GetAllCustomersAsync()
         {
-            return await _customerRepository.GetAllAsync();
+            try
+            {
+                var customers = await _customerRepository.GetAllCustomersAsync();
+
+                return customers.Select(c => new CustomerDetailDto
+                {
+                    CustomerId = c.CustomerId,
+                    Name = c.Name,
+                    IdentificationNumber = c.IdentificationNumber,
+                    IdentificationTypeId = c.IdentificationTypeId,
+                    Email = c.Email,
+                    Phone = c.Phone,
+                    Address = c.Address
+                }).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
-        public async Task<Customer?> GetCustomerByIdAsync(int customerId)
+        public async Task AddCustomerAsync(CustomerDetailDto customerDto)
         {
-            return await _customerRepository.GetByIdAsync(customerId);
+            try
+            {
+                var customer = new Customer
+                {
+                    Name = customerDto.Name,
+                    IdentificationNumber = customerDto.IdentificationNumber,
+                    IdentificationTypeId = customerDto.IdentificationTypeId,
+                    Email = customerDto.Email,
+                    Phone = customerDto.Phone,
+                    Address = customerDto.Address,
+                    Status = true
+                };
+
+                await _customerRepository.AddAsync(customer);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
-        public async Task AddCustomerAsync(Customer customer)
+        public async Task UpdateCustomerAsync(CustomerDetailDto customerDto)
         {
-            await _customerRepository.AddAsync(customer);
-        }
+            try
+            {
+                var customer = new Customer
+                {
+                    CustomerId = customerDto.CustomerId,
+                    Name = customerDto.Name,
+                    IdentificationNumber = customerDto.IdentificationNumber,
+                    IdentificationTypeId = customerDto.IdentificationTypeId,
+                    Email = customerDto.Email,
+                    Phone = customerDto.Phone,
+                    Address = customerDto.Address,
+                    Status = true
+                };
 
-        public async Task UpdateCustomerAsync(Customer customer)
-        {
-            await _customerRepository.UpdateAsync(customer);
+                await _customerRepository.UpdateAsync(customer);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task DeleteCustomerAsync(int customerId)
         {
-            await _customerRepository.DeleteAsync(customerId);
+            try
+            {
+                var customer = await _customerRepository.GetByIdAsync(customerId);
+                if (customer is not null)
+                {
+                    customer.Status = false; 
+                    await _customerRepository.UpdateAsync(customer);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<List<CustomerOrdersDto>> ListOrdersByCustomerAsync()
         {
-            return await _customerRepository.ListOrdersByCustomerAsync();
+            try
+            {
+                var customers = await _customerRepository.ListOrdersByCustomerAsync();
+
+                var result = customers.Select(c => new CustomerOrdersDto
+                {
+                    CustomerId = c.CustomerId,
+                    CustomerName = c.Name,
+                    Orders = c.Orders?.Select(o => new SimpleOrderSummaryDto
+                    {
+                        OrderId = o.OrderId ?? 0,
+                        Description = o.Description,
+                        Status = o.OrderStatus != null ? o.OrderStatus.Name : "Sin estado",
+                        TechnicianName = o.OrderAssignments != null && o.OrderAssignments.Count != 0
+                            ? o.OrderAssignments.OrderByDescending(a => a.AssignedAt).FirstOrDefault()?.Technician?.Name ?? "No asignado"
+                            : "No asignado",
+                        ScheduledFor = o.ScheduledFor
+                    }).ToList() ?? new List<SimpleOrderSummaryDto>()
+                }).ToList();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

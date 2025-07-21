@@ -7,38 +7,23 @@ namespace Adarec.Infrastructure.DataAccess.Repository
 {
     public class UserRepositoryImpl(adarecContext context) : RepositoryImpl<User>(context), IUserRepository
     {
-        public async Task<List<TechnicianWorkloadDto>> GetTechnicianWorkloadAsync()
-        {
-            var result = await (
-                from u in context.Users
-                where u.Status && u.Roles.Any(r => r.RoleId == 2)
-                select new TechnicianWorkloadDto
-                {
-                    TechnicianId = u.UserId,
-                    TechnicianName = u.Name,
-                    TechnicianEmail = u.Email,
-                    AssignedOrdersCount = u.OrderAssignments.Count()
-                }
-            ).ToListAsync();
+        private readonly adarecContext _context = context;
 
-            return result;
+        public async Task<List<User>> GetTechniciansAsync()
+        {
+            return await _context.Users
+                .Include(u => u.OrderAssignments)
+                .Include(u => u.Roles)
+                .Where(u => u.Status && u.Roles.Any(r => r.RoleId == 2))
+                .ToListAsync();
         }
 
-        public async Task<List<TechnicianDto>> GetAllUsersAsync()
+        public async Task<List<User>> GetAllUsersAsync()
         {
-            var result = await context.Users
+            return await _context.Users
+                .Include(u => u.Roles)
                 .Where(u => u.Status && u.Roles.Any())
-                .Select(u => new TechnicianDto
-                {
-                    TechnicianId = u.UserId,
-                    Name = u.Name,
-                    Email = u.Email,
-                    Status = u.Status,
-                    Password = u.Password,
-                    IdRol = u.Roles.Select(r => r.RoleId).ToList(), 
-                })
                 .ToListAsync();
-            return result;
         }
     }
 }

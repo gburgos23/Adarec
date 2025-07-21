@@ -5,7 +5,7 @@ namespace Adarec.Domain.Models.Abstractions
 {
     public interface IUserRepository : IRepository<User>
     {
-        Task<List<TechnicianWorkloadDto>> GetTechnicianWorkloadAsync();
-        Task<List<TechnicianDto>> GetAllUsersAsync();
+        Task<List<User>> GetTechniciansAsync();
+        Task<List<User>> GetAllUsersAsync();
     }
 }

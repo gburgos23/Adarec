@@ -2,7 +2,7 @@
 {
     public class TechnicianPendingOrdersDto
     {
-        public string? TechnicianName { get; set; }
+        public int? TechnicianId { get; set; }
         public List<PendingOrderSummaryDto>? PendingOrders { get; set; }
     }
 }

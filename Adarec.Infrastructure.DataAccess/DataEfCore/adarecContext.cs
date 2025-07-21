@@ -69,6 +69,10 @@ public partial class adarecContext : DbContext
 
         modelBuilder.Entity<Customer>(entity =>
         {
+            entity.HasIndex(e => e.IdentificationNumber, "IX_customers_identification_number_active")
+                .IsUnique()
+                .HasFilter("([status]=(1))");
+
             entity.Property(e => e.Status).HasDefaultValue(true);
 
             entity.HasOne(d => d.IdentificationType).WithMany(p => p.Customers)
@@ -123,10 +127,6 @@ public partial class adarecContext : DbContext
         modelBuilder.Entity<Order>(entity =>
         {
             entity.Property(e => e.OrderStatusId).HasDefaultValue(1);
-
-            entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_orders_customer");
 
             entity.HasOne(d => d.OrderStatus).WithMany(p => p.Orders)
                 .OnDelete(DeleteBehavior.ClientSetNull)

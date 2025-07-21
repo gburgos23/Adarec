@@ -1,4 +1,4 @@
-using Adarec.Domain.Models.Entities;
+using Adarec.Application.DTO.DTOs;
 using System.ServiceModel;
 
 namespace Adarec.Application.Services
@@ -7,18 +7,6 @@ namespace Adarec.Application.Services
     public interface IIdentificationTypeService
     {
         [OperationContract]
-        Task<IEnumerable<IdentificationType>> GetAllIdentificationTypesAsync();
-
-        [OperationContract]
-        Task<IdentificationType?> GetIdentificationTypeByIdAsync(int identificationTypeId);
-
-        [OperationContract]
-        Task AddIdentificationTypeAsync(IdentificationType identificationType);
-
-        [OperationContract]
-        Task UpdateIdentificationTypeAsync(IdentificationType identificationType);
-
-        [OperationContract]
-        Task DeleteIdentificationTypeAsync(int identificationTypeId);
+        Task<List<RolDto>> GetAllIdentificationTypesAsync();
     }
 }

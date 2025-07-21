@@ -11,6 +11,9 @@ namespace Adarec.Application.Services
         Task<List<TechnicianDto>> GetAllUsersAsync();
 
         [OperationContract]
+        Task<TechnicianDto?> GetUserByMail(string mail);
+
+        [OperationContract]
         Task AddUserAsync(TechnicianDto user);
 
         [OperationContract]

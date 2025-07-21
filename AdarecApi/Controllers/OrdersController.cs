@@ -143,9 +143,9 @@ namespace AdarecApi.Controllers
         [HttpGet("pending-by-technician")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(List<TechnicianPendingOrdersDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetPendingOrdersByTechnician()
+        public async Task<IActionResult> GetPendingOrdersByTechnician(int idTechnician)
         {
-            var result = await _service.ListPendingOrdersByTechnicianAsync();
+            var result = await _service.ListPendingOrdersByTechnicianAsync(idTechnician);
             return Ok(result);
         }
 
@@ -178,12 +178,12 @@ namespace AdarecApi.Controllers
         /// </remarks>
         /// <param name="identificationNumber">Número de documento del cliente.</param>
         /// <response code="200">Lista de órdenes encontrada.</response>
-        [HttpGet("by-customer/{identificationNumber}")]
+        [HttpGet]
         [Produces("application/json")]
         [ProducesResponseType(typeof(List<OrderFullDetailDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetOrderDetailByCustomerDocument(string identificationNumber)
+        public async Task<IActionResult> GetAllOrders()
         {
-            var result = await _service.GetOrderDetailByCustomerDocumentAsync(identificationNumber);
+            var result = await _service.GetAllOrders();
             return Ok(result);
         }
 
