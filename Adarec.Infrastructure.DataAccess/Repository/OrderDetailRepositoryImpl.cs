@@ -45,6 +45,7 @@ namespace Adarec.Infrastructure.DataAccess.Repository
                         ItemStatus = od.ItemStatus.Name,
                         Quantity = od.Quantity,
                         IntakePhoto = od.IntakePhoto,
+                        SolutionPhoto = od.solution_photo,
                         DeviceSpecs = od.DeviceSpecs
                     }).ToList(),
                     Technician = t != null ? new TechnicianDto

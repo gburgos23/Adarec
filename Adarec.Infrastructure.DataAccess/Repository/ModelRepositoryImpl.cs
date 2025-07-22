@@ -9,18 +9,11 @@ namespace Adarec.Infrastructure.DataAccess.Repository
     {
         private readonly adarecContext _context = context;
 
-        public async Task<List<ModelDto>> GetActiveModelsAsync()
+        public async Task<List<Model>> GetActiveModelsAsync()
         {
             return await _context.Models
                 .Where(m => m.Status)
-                .Select(m => new ModelDto
-                {
-                    ModelId = m.ModelId,
-                    Name = m.Name,
-                    Description = m.Description,
-                    BrandId = m.BrandId,
-                    DeviceTypeId = m.DeviceTypeId
-                }).ToListAsync();
+                .ToListAsync();
         }
     }
 }

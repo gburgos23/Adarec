@@ -1,4 +1,5 @@
-﻿namespace Adarec.Application.DTO.DTOs
+﻿
+namespace Adarec.Application.DTO.DTOs
 {
     public class DeviceDetailDto
     {
@@ -11,6 +12,7 @@
         public string? ItemStatus { get; set; }
         public int Quantity { get; set; }
         public string? IntakePhoto { get; set; }
+        public string? SolutionPhoto { get; set; }
         public string? DeviceSpecs { get; set; }
     }
 }

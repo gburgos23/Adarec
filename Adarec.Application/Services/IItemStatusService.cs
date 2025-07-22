@@ -1,3 +1,4 @@
+using Adarec.Application.DTO.DTOs;
 using Adarec.Domain.Models.Entities;
 using System.ServiceModel;
 
@@ -7,18 +8,6 @@ namespace Adarec.Application.Services
     public interface IItemStatusService
     {
         [OperationContract]
-        Task<IEnumerable<ItemStatus>> GetAllItemStatusesAsync();
-
-        [OperationContract]
-        Task<ItemStatus?> GetItemStatusByIdAsync(int itemStatusId);
-
-        [OperationContract]
-        Task AddItemStatusAsync(ItemStatus itemStatus);
-
-        [OperationContract]
-        Task UpdateItemStatusAsync(ItemStatus itemStatus);
-
-        [OperationContract]
-        Task DeleteItemStatusAsync(int itemStatusId);
+        Task<List<RolDto>> GetAllItemStatusesAsync();
     }
 }

@@ -30,6 +30,9 @@ public partial class OrderDetail
     [Column("intake_photo")]
     public string IntakePhoto { get; set; }
 
+    [Column("solution_photo")]
+    public string solution_photo { get; set; }
+
     [Column("item_status_id")]
     public int? ItemStatusId { get; set; }
 

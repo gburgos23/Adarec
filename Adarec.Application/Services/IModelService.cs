@@ -8,21 +8,6 @@ namespace Adarec.Application.Services
     public interface IModelService
     {
         [OperationContract]
-        Task<IEnumerable<Model>> GetAllModelsAsync();
-
-        [OperationContract]
-        Task<Model?> GetModelByIdAsync(int modelId);
-
-        [OperationContract]
-        Task AddModelAsync(Model model);
-
-        [OperationContract]
-        Task UpdateModelAsync(Model model);
-
-        [OperationContract]
-        Task DeleteModelAsync(int modelId);
-
-        [OperationContract]
         Task<List<ModelDto>> GetActiveModelsAsync();
     }
 }

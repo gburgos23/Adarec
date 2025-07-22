@@ -90,7 +90,7 @@ namespace AdarecApi.Controllers
             try
             {
                 await _service.UpdateUserAsync(user);
-                return StatusCode(StatusCodes.Status200OK, $"User {user.Name} updated successfully.");
+                return StatusCode(StatusCodes.Status204NoContent, $"User {user.Name} updated successfully.");
             }
             catch (Exception ex)
             {
@@ -117,6 +117,27 @@ namespace AdarecApi.Controllers
                 return StatusCode(StatusCodes.Status200OK, workload);
             else
                 return StatusCode(StatusCodes.Status404NotFound, "No technician workload found.");
+        }
+
+        /// <summary>
+        /// Elimina (inhabilita) un usuario por su ID.
+        /// </summary>
+        [HttpDelete("{userId:int}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteUser(int userId)
+        {
+            try
+            {
+                await _service.DeleteUserAsync(userId);
+                return StatusCode(StatusCodes.Status204NoContent);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error: {ex.Message}");
+            }
         }
     }
 }

@@ -148,23 +148,33 @@ namespace Adarec.Application.ServicesImpl
         {
             var orders = await _orderRepository.ListPendingOrdersByTechnicianAsync();
 
-            // Agrupa por técnico y transforma a DTO
             var result = orders
                 .SelectMany(o => o.OrderAssignments
-                    .Where(oa => oa.Technician != null && oa.TechnicianId == idTechnician && oa.Technician.Roles.Any(r => r.RoleId == 2)),
-                    (o, oa) => new { o, oa })
-                .GroupBy(x => new { x.oa.Technician.UserId})
+                .Where(oa => oa.Technician != null && oa.TechnicianId == idTechnician && oa.Technician.Roles.Any(r => r.RoleId == 2)),
+                (o, oa) => new { o, oa })
+                .GroupBy(x => new { x.oa.Technician.UserId })
                 .Select(g => new TechnicianPendingOrdersDto
                 {
                     TechnicianId = g.Key.UserId,
-                    PendingOrders = g.Select(x => new PendingOrderSummaryDto
+                    PendingOrders = [.. g.Select(x => new PendingOrderSummaryDto
                     {
                         OrderId = x.o.OrderId,
                         CustomerName = x.o.Customer.Name,
                         Description = x.o.Description,
                         Status = x.o.OrderStatus.OrderStatusId,
                         ScheduledFor = x.o.ScheduledFor
-                    }).ToList()
+                    })],
+                    Customer = g.Select(x => x.o.Customer)
+                    .Where(c => c != null)
+                    .Select(c => new CustomerDetailDto
+                    {
+                        CustomerId = c.CustomerId,
+                        Name = c.Name,
+                        IdentificationNumber = c.IdentificationNumber,
+                        Email = c.Email,
+                        Phone = c.Phone,
+                        Address = c.Address
+                    }).FirstOrDefault()
                 })
                 .ToList();
 
@@ -187,7 +197,7 @@ namespace Adarec.Application.ServicesImpl
             {
                 OrderId = order.OrderId,
                 Description = order.Description,
-                Status = order.OrderStatus?.Name,
+                Status = order.OrderStatus?.OrderStatusId,
                 ScheduledFor = order.ScheduledFor,
                 Customer = order.Customer != null ? new CustomerDetailDto
                 {
@@ -201,12 +211,15 @@ namespace Adarec.Application.ServicesImpl
                 Devices = order.OrderDetails?.Select(od => new DeviceDetailDto
                 {
                     DetailId = od.DetailId,
+                    ModelId = od.ModelId,
                     ModelName = od.Model?.Name,
                     BrandName = od.Model?.Brand?.Name,
                     DeviceTypeName = od.Model?.DeviceType?.Name,
+                    ItemStatusId = od.ItemStatusId,
                     ItemStatus = od.ItemStatus?.Name,
                     Quantity = od.Quantity,
                     IntakePhoto = od.IntakePhoto,
+                    SolutionPhoto = od.solution_photo,
                     DeviceSpecs = od.DeviceSpecs
                 }).ToList(),
                 Technician = technician != null ? new TechnicianDto
@@ -215,7 +228,7 @@ namespace Adarec.Application.ServicesImpl
                     Name = technician.Name,
                     Email = technician.Email
                 } : null,
-                LastComment = order.Comments?
+                Comments = order.Comments!
                     .OrderByDescending(cm => cm.CreatedAt)
                     .Select(cm => new CommentDetailDto
                     {
@@ -224,7 +237,7 @@ namespace Adarec.Application.ServicesImpl
                         Comment = cm.Comment1,
                         CreatedAt = cm.CreatedAt
                     })
-                    .FirstOrDefault()
+                    .ToList()
             };
 
             return dto;
@@ -234,7 +247,6 @@ namespace Adarec.Application.ServicesImpl
         {
             var orders = await _orderRepository.GetAllOrders();
 
-            // Agrupa por técnico y transforma a DTO
             var result = orders
                 .SelectMany(o => o.OrderAssignments
                     .Where(oa => oa.Technician != null),
@@ -243,14 +255,25 @@ namespace Adarec.Application.ServicesImpl
                 .Select(g => new TechnicianPendingOrdersDto
                 {
                     TechnicianId = g.Key.UserId,
-                    PendingOrders = g.Select(x => new PendingOrderSummaryDto
+                    PendingOrders = [.. g.Select(x => new PendingOrderSummaryDto
                     {
                         OrderId = x.o.OrderId,
                         CustomerName = x.o.Customer.Name,
                         Description = x.o.Description,
                         Status = x.o.OrderStatus.OrderStatusId,
                         ScheduledFor = x.o.ScheduledFor
-                    }).ToList()
+                    })],
+                    Customer = g.Select(x => x.o.Customer)
+                    .Where(c => c != null)
+                    .Select(c => new CustomerDetailDto
+                    {
+                        CustomerId = c.CustomerId,
+                        Name = c.Name,
+                        IdentificationNumber = c.IdentificationNumber,
+                        Email = c.Email,
+                        Phone = c.Phone,
+                        Address = c.Address
+                    }).FirstOrDefault()
                 })
                 .ToList();
 

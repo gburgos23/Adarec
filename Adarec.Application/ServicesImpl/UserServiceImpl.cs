@@ -67,6 +67,22 @@ namespace Adarec.Application.ServicesImpl
             await _userRepository.AddAsync(userEntity);
         }
 
+        public async Task DeleteUserAsync(int customerId)
+        {
+            try
+            {
+                var customer = await _userRepository.GetByIdAsync(customerId);
+                if (customer is not null)
+                {
+                    customer.Status = false;
+                    await _userRepository.UpdateAsync(customer);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public async Task UpdateUserAsync(TechnicianDto user)
         {
             var userEntity = await context.Users

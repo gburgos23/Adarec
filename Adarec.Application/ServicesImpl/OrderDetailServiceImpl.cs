@@ -10,11 +10,6 @@ namespace Adarec.Application.ServicesImpl
     {
         private readonly IOrderDetailRepository _orderDetailRepository = new OrderDetailRepositoryImpl(context);
 
-        public async Task<IEnumerable<OrderDetail>> GetAllOrderDetailsAsync()
-        {
-            return await _orderDetailRepository.GetAllAsync();
-        }
-
         public async Task<OrderDetail?> GetOrderDetailByIdAsync(int detailId)
         {
             return await _orderDetailRepository.GetByIdAsync(detailId);
@@ -25,9 +20,28 @@ namespace Adarec.Application.ServicesImpl
             await _orderDetailRepository.AddAsync(detail);
         }
 
-        public async Task UpdateOrderDetailAsync(OrderDetail detail)
+        public async Task UpdateOrderDetailAsync(DeviceDetailDto detail)
         {
-            await _orderDetailRepository.UpdateAsync(detail);
+            try
+            {
+                if (detail == null || detail.DetailId == null || detail.DetailId <= 0)
+                    throw new ArgumentException("No hay datos de detalle de dispositivo para actualizar.");
+
+                var orderDetail = await _orderDetailRepository.GetByIdAsync(detail.DetailId.Value) ?? throw new InvalidOperationException("Detalle de dispositivo no encontrado.");
+                orderDetail.ModelId = detail.ModelId;
+                orderDetail.Quantity = detail.Quantity;
+                orderDetail.IntakePhoto = detail.IntakePhoto;
+                orderDetail.DeviceSpecs = detail.DeviceSpecs ?? string.Empty;
+                orderDetail.ItemStatusId = detail.ItemStatusId;
+                orderDetail.DateUpdated = DateTime.UtcNow;
+                orderDetail.solution_photo = detail.SolutionPhoto;
+
+                await _orderDetailRepository.UpdateAsync(orderDetail);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al actualizar el detalle de dispositivo: {ex.Message}", ex);
+            }
         }
 
         public async Task DeleteOrderDetailAsync(int detailId)

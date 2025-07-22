@@ -1,3 +1,4 @@
+using Adarec.Application.DTO.DTOs;
 using Adarec.Application.Services;
 using Adarec.Domain.Models.Abstractions;
 using Adarec.Domain.Models.Entities;
@@ -9,29 +10,16 @@ namespace Adarec.Application.ServicesImpl
     {
         private readonly IItemStatusRepository _itemStatusRepository = new ItemStatusRepositoryImpl(context);
 
-        public async Task<IEnumerable<ItemStatus>> GetAllItemStatusesAsync()
+        public async Task<List<RolDto>> GetAllItemStatusesAsync()
         {
-            return await _itemStatusRepository.GetAllAsync();
-        }
+            var data = await _itemStatusRepository.GetAllAsync();
 
-        public async Task<ItemStatus?> GetItemStatusByIdAsync(int itemStatusId)
-        {
-            return await _itemStatusRepository.GetByIdAsync(itemStatusId);
-        }
-
-        public async Task AddItemStatusAsync(ItemStatus itemStatus)
-        {
-            await _itemStatusRepository.AddAsync(itemStatus);
-        }
-
-        public async Task UpdateItemStatusAsync(ItemStatus itemStatus)
-        {
-            await _itemStatusRepository.UpdateAsync(itemStatus);
-        }
-
-        public async Task DeleteItemStatusAsync(int itemStatusId)
-        {
-            await _itemStatusRepository.DeleteAsync(itemStatusId);
+            return [.. data.Select(x => new RolDto
+            {
+                RolId = x.ItemStatusId,
+                Name = x.Name,
+                Status = x.Status
+            })];
         }
     }
 }

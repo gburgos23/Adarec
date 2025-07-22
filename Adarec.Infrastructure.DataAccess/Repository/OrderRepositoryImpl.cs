@@ -32,12 +32,12 @@ namespace Adarec.Infrastructure.DataAccess.Repository
 
         public async Task<List<Order>> ListPendingOrdersByTechnicianAsync()
         {
-            // Órdenes asignadas a técnicos con rol 2 y estado distinto de 3
             var orders = await _context.Orders
                 .Include(o => o.Customer)
                 .Include(o => o.OrderDetails)
                 .Include(o => o.OrderAssignments)
                     .ThenInclude(oa => oa.Technician)
+                    .ThenInclude(t => t.Roles)
                 .Include(o => o.OrderStatus)
                 .Where(o => o.OrderAssignments.Any(oa => oa.Technician.Roles.Any(r => r.RoleId == 2)) && o.OrderStatusId != 3)
                 .ToListAsync();
@@ -51,7 +51,7 @@ namespace Adarec.Infrastructure.DataAccess.Repository
                 .Include(o => o.Customer)
                 .Include(o => o.OrderDetails)
                 .Include(o => o.OrderAssignments)
-                    .ThenInclude(oa => oa.Technician) 
+                    .ThenInclude(oa => oa.Technician)
                 .Include(o => o.OrderStatus)
                 .ToListAsync();
 

@@ -5,6 +5,6 @@ namespace Adarec.Domain.Models.Abstractions
 {
     public interface IModelRepository : IRepository<Model>
     {
-        Task<List<ModelDto>> GetActiveModelsAsync();
+        Task<List<Model>> GetActiveModelsAsync();
     }
 }

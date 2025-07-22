@@ -44,6 +44,8 @@ builder.Services.AddScoped<IEncriptServices, EncriptServicesImpl>();
 builder.Services.AddScoped<IAuthServices, AuthServicesImpl>();
 builder.Services.AddScoped<ICustomerService, CustomerServiceImpl>();
 builder.Services.AddScoped<IIdentificationTypeService, IdentificationTypeServiceImpl>();
+builder.Services.AddScoped<IOrderStatusService, OrderStatusServiceImpl>();
+builder.Services.AddScoped<IItemStatusService, ItemStatusServiceImpl>();
 
 var app = builder.Build();
 

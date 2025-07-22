@@ -21,5 +21,8 @@ namespace Adarec.Application.Services
 
         [OperationContract]
         Task<List<TechnicianWorkloadDto>> GetTechnicianWorkloadAsync();
+
+        [OperationContract]
+        Task DeleteUserAsync(int customerId);
     }
 }

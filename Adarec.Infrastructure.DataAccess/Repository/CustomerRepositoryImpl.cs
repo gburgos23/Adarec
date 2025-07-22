@@ -17,6 +17,14 @@ namespace Adarec.Infrastructure.DataAccess.Repository
                 .ToListAsync();
         }
 
+        public async Task<Customer?> GetCustomerByIdentificationAsync(string identificationClient)
+        {
+            return await context.Customers
+                .Include(c => c.IdentificationType)
+                .Where(c => c.Status && c.IdentificationNumber == identificationClient)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<List<Customer>> ListOrdersByCustomerAsync()
         {
             return await context.Customers

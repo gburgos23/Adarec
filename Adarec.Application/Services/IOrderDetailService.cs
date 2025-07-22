@@ -7,8 +7,6 @@ namespace Adarec.Application.Services
     [ServiceContract]
     public interface IOrderDetailService
     {
-        [OperationContract]
-        Task<IEnumerable<OrderDetail>> GetAllOrderDetailsAsync();
 
         [OperationContract]
         Task<OrderDetail?> GetOrderDetailByIdAsync(int detailId);
@@ -17,7 +15,7 @@ namespace Adarec.Application.Services
         Task AddOrderDetailAsync(OrderDetail detail);
 
         [OperationContract]
-        Task UpdateOrderDetailAsync(OrderDetail detail);
+        Task UpdateOrderDetailAsync(DeviceDetailDto detail);
 
         [OperationContract]
         Task DeleteOrderDetailAsync(int detailId);

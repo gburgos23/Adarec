@@ -11,6 +11,9 @@ namespace Adarec.Application.Services
         Task<List<CustomerDetailDto>> GetAllCustomersAsync();
 
         [OperationContract]
+        Task<CustomerDetailDto?> CustomersByIdentification(string identificationClient);
+
+        [OperationContract]
         Task AddCustomerAsync(CustomerDetailDto customer);
 
         [OperationContract]

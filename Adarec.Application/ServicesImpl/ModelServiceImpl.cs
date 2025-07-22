@@ -10,34 +10,18 @@ namespace Adarec.Application.ServicesImpl
     {
         private readonly IModelRepository _modelRepository = new ModelRepositoryImpl(context);
 
-        public async Task<IEnumerable<Model>> GetAllModelsAsync()
-        {
-            return await _modelRepository.GetAllAsync();
-        }
-
-        public async Task<Model?> GetModelByIdAsync(int modelId)
-        {
-            return await _modelRepository.GetByIdAsync(modelId);
-        }
-
-        public async Task AddModelAsync(Model model)
-        {
-            await _modelRepository.AddAsync(model);
-        }
-
-        public async Task UpdateModelAsync(Model model)
-        {
-            await _modelRepository.UpdateAsync(model);
-        }
-
-        public async Task DeleteModelAsync(int modelId)
-        {
-            await _modelRepository.DeleteAsync(modelId);
-        }
-
         public async Task<List<ModelDto>> GetActiveModelsAsync()
         {
-            return await _modelRepository.GetActiveModelsAsync();
+            var models = await _modelRepository.GetActiveModelsAsync();
+            return [.. models.Where(m => m.Status)
+                 .Select(m => new ModelDto
+                 {
+                     ModelId = m.ModelId,
+                     Name = m.Name,
+                     Description = m.Description,
+                     BrandId = m.BrandId,
+                     DeviceTypeId = m.DeviceTypeId
+                 })];
         }
     }
 }

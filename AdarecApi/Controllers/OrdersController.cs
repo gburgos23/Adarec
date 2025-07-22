@@ -1,14 +1,16 @@
 using Adarec.Application.DTO.DTOs;
 using Adarec.Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Build.Framework;
 
 namespace AdarecApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrdersController(IOrderService service) : ControllerBase
+    public class OrdersController(IOrderService service, IOrderStatusService orderStatusService) : ControllerBase
     {
         private readonly IOrderService _service = service;
+        private readonly IOrderStatusService _orderStatusService = orderStatusService;
 
         /// <summary>
         /// Agrega una nueva orden.
@@ -54,7 +56,7 @@ namespace AdarecApi.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> PostOrder([FromBody] OrderDto order)
         {
-            if (order == null || order.OrderId != null) 
+            if (order == null || order.OrderId != null)
                 return BadRequest("Datos de orden inválidos.");
             try
             {
@@ -158,11 +160,12 @@ namespace AdarecApi.Controllers
         /// <param name="orderId">ID de la orden.</param>
         /// <response code="200">Detalle de la orden encontrado.</response>
         /// <response code="404">Orden no encontrada.</response>
-        [HttpGet("{orderId:int}")]
+        [HttpGet]
+        [Route("{orderId}")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(OrderFullDetailDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetOrderDetailById(int orderId)
+        public async Task<IActionResult> GetOrderDetailById([FromRoute] int orderId)
         {
             var result = await _service.GetOrderDetailByIdAsync(orderId);
             if (result == null)
@@ -180,7 +183,7 @@ namespace AdarecApi.Controllers
         /// <response code="200">Lista de órdenes encontrada.</response>
         [HttpGet]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(List<OrderFullDetailDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<TechnicianPendingOrdersDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllOrders()
         {
             var result = await _service.GetAllOrders();
@@ -207,19 +210,18 @@ namespace AdarecApi.Controllers
         }
 
         /// <summary>
-        /// Obtiene las soluciones de una orden.
+        /// Obtiene todos los estados de orden.
         /// </summary>
         /// <remarks>
-        /// Devuelve una lista de soluciones asociadas a una orden.
+        /// Devuelve una lista de estados de orden disponibles.
         /// </remarks>
-        /// <param name="orderId">ID de la orden.</param>
-        /// <response code="200">Lista de soluciones encontrada.</response>
-        [HttpGet("{orderId:int}/solutions")]
+        /// <response code="200">Lista de estados encontrada.</response>
+        [HttpGet("statuses")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(List<SolutionDetailDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetSolutionsByOrder(int orderId)
+        [ProducesResponseType(typeof(List<RolDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllOrderStatuses()
         {
-            var result = await _service.GetSolutionsByOrderAsync(orderId);
+            var result = await _orderStatusService.GetAllOrderStatusesAsync();
             return Ok(result);
         }
     }

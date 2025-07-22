@@ -33,6 +33,32 @@ namespace Adarec.Application.ServicesImpl
             }
         }
 
+        public async Task<CustomerDetailDto?> CustomersByIdentification(string identificationClient)
+        {
+            try
+            {
+                var customer = await _customerRepository.GetCustomerByIdentificationAsync(identificationClient);
+
+                if (customer == null)
+                    return null;
+
+                return new CustomerDetailDto
+                {
+                    CustomerId = customer.CustomerId,
+                    Name = customer.Name,
+                    IdentificationNumber = customer.IdentificationNumber,
+                    IdentificationTypeId = customer.IdentificationTypeId,
+                    Email = customer.Email,
+                    Phone = customer.Phone,
+                    Address = customer.Address
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task AddCustomerAsync(CustomerDetailDto customerDto)
         {
             try

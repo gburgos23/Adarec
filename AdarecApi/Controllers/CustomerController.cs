@@ -39,9 +39,42 @@ namespace AdarecApi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("{identificationClient}")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(CustomerDetailDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetCustomersByIdentification([FromRoute] string identificationClient)
+        {
+            try
+            {
+                var customers = await _service.CustomersByIdentification(identificationClient);
+                if (customers != null)
+                {
+                    return StatusCode(StatusCodes.Status200OK, customers);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status404NotFound, "No se encontro cliente con esa identificación.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error: {ex.Message}");
+            }
+        }
+
         /// <summary>
         /// Agrega un nuevo cliente.
         /// </summary>
+        /// <remarks>
+        /// Crea un nuevo cliente en el sistema. El campo <c>CustomerId</c> debe ser nulo.
+        /// </remarks>
+        /// <param name="customer">Objeto con los datos del cliente a agregar.</param>
+        /// <response code="201">Cliente agregado exitosamente.</response>
+        /// <response code="400">Datos de cliente inválidos.</response>
+        /// <response code="500">Error interno del servidor.</response>
         [HttpPost]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -66,9 +99,16 @@ namespace AdarecApi.Controllers
         /// <summary>
         /// Actualiza un cliente existente.
         /// </summary>
+        /// <remarks>
+        /// Actualiza los datos de un cliente existente. El campo <c>CustomerId</c> debe ser mayor a 0.
+        /// </remarks>
+        /// <param name="customer">Objeto con los datos del cliente a actualizar.</param>
+        /// <response code="204">Cliente actualizado exitosamente.</response>
+        /// <response code="400">Datos de cliente inválidos.</response>
+        /// <response code="500">Error interno del servidor.</response>
         [HttpPut]
         [Produces("application/json")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateCustomer([FromBody] CustomerDetailDto customer)
@@ -79,7 +119,7 @@ namespace AdarecApi.Controllers
                     return StatusCode(StatusCodes.Status400BadRequest, "Datos de cliente inválidos.");
 
                 await _service.UpdateCustomerAsync(customer);
-                return StatusCode(StatusCodes.Status200OK);
+                return StatusCode(StatusCodes.Status204NoContent);
             }
             catch (Exception ex)
             {
@@ -90,17 +130,25 @@ namespace AdarecApi.Controllers
         /// <summary>
         /// Elimina (inhabilita) un cliente por su ID.
         /// </summary>
-        [HttpDelete("{customerId:int}")]
+        /// <remarks>
+        /// Inhabilita el cliente especificado por su identificador.
+        /// </remarks>
+        /// <param name="customerId">ID del cliente a eliminar.</param>
+        /// <response code="204">Cliente eliminado exitosamente.</response>
+        /// <response code="404">No se encontró el cliente.</response>
+        /// <response code="500">Error interno del servidor.</response>
+        [HttpDelete]
+        [Route("{customerId}")]
         [Produces("application/json")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteCustomer(int customerId)
+        public async Task<IActionResult> DeleteCustomer([FromRoute] int customerId)
         {
             try
             {
                 await _service.DeleteCustomerAsync(customerId);
-                return StatusCode(StatusCodes.Status200OK);
+                return StatusCode(StatusCodes.Status204NoContent);
             }
             catch (Exception ex)
             {
@@ -111,6 +159,12 @@ namespace AdarecApi.Controllers
         /// <summary>
         /// Lista las órdenes por cliente.
         /// </summary>
+        /// <remarks>
+        /// Devuelve una lista de clientes junto con sus órdenes asociadas.
+        /// </remarks>
+        /// <response code="200">Lista de órdenes encontrada.</response>
+        /// <response code="404">No se encontraron órdenes para los clientes.</response>
+        /// <response code="500">Error interno del servidor.</response>
         [HttpGet("orders")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(List<CustomerOrdersDto>), StatusCodes.Status200OK)]
