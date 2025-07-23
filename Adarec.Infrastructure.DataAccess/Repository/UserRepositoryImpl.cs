@@ -13,7 +13,6 @@ namespace Adarec.Infrastructure.DataAccess.Repository
         {
             return await _context.Users
                 .Include(u => u.Roles)
-                .Where(u => u.Status && u.Roles.Any())
                 .ToListAsync();
         }
     }

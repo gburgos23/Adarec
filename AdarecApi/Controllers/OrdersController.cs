@@ -203,7 +203,7 @@ namespace AdarecApi.Controllers
         [HttpGet("ticket-count")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(List<TicketCountByStatusDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetTicketCountByStatus([FromQuery] int year, [FromQuery] int month, [FromQuery] int? technicianId)
+        public async Task<IActionResult> GetTicketCountByStatus(int? year, int? month, int? technicianId)
         {
             var result = await _service.GetTicketCountByStatusAsync(year, month, technicianId);
             return Ok(result);

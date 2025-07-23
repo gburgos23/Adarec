@@ -315,7 +315,7 @@ namespace Adarec.Application.ServicesImpl
             return result;
         }
 
-        public async Task<List<TicketCountByStatusDto>> GetTicketCountByStatusAsync(int year, int month, int? technicianId = null)
+        public async Task<List<TicketCountByStatusDto>> GetTicketCountByStatusAsync(int? year, int? month, int? technicianId = null)
         {
             var orders = await _orderRepository.GetTicketCountByStatusAsync(year, month, technicianId);
 

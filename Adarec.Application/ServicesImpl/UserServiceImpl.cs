@@ -2,33 +2,36 @@ using Adarec.Application.DTO.DTOs;
 using Adarec.Application.Services;
 using Adarec.Domain.Models.Abstractions;
 using Adarec.Domain.Models.Entities;
+using Adarec.Infrastructure.CrossCuting.Services;
 using Adarec.Infrastructure.DataAccess.Repository;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace Adarec.Application.ServicesImpl
 {
-    public class UserServiceImpl(adarecContext context) : IUserService
+    public class UserServiceImpl(adarecContext context, IEncriptServices encriptServices) : IUserService
     {
         private readonly IUserRepository _userRepository = new UserRepositoryImpl(context);
+        private readonly IEncriptServices _encriptServices = encriptServices;
 
         public async Task<List<TechnicianDto>> GetAllUsersAsync()
         {
             var users = await _userRepository.GetAllUsersAsync();
 
-            return users.Select(u => new TechnicianDto
+            return [.. users.Select(u => new TechnicianDto
             {
                 TechnicianId = u.UserId,
                 Name = u.Name,
                 Email = u.Email,
-                IdRol = u.Roles!.Select(r => r.RoleId).ToList()
-            }).Where(u => u.Status)
-            .ToList();
+                IdRol = [.. u.Roles!.Select(r => r.RoleId)],
+                Password = _encriptServices.Decrypt(u.Password),
+                Status = u.Status
+            })];
         }
 
         public async Task<TechnicianDto?> GetUserByMail(string mail)
         {
             var users = await _userRepository.GetAllUsersAsync();
+
 
             return (users.Select(u => new TechnicianDto
             {
@@ -43,15 +46,17 @@ namespace Adarec.Application.ServicesImpl
 
         public async Task AddUserAsync(TechnicianDto user)
         {
+
+            var pass = _encriptServices.Encrypt(user.Password!);
+
             var userEntity = new User
             {
                 Name = user.Name,
                 Email = user.Email,
-                Password = user.Password,
+                Password = pass,
                 Status = user.Status
             };
 
-            // Asignar roles
             if (user.IdRol != null && user.IdRol.Count > 0)
             {
                 foreach (var roleId in user.IdRol)
@@ -85,19 +90,19 @@ namespace Adarec.Application.ServicesImpl
         }
         public async Task UpdateUserAsync(TechnicianDto user)
         {
+            var pass = _encriptServices.Encrypt(user.Password!);
+
             var userEntity = await context.Users
                 .Include(u => u.Roles)
                 .FirstOrDefaultAsync(u => u.UserId == user.TechnicianId) ?? throw new Exception("Usuario no encontrado");
 
             userEntity.Name = user.Name;
             userEntity.Email = user.Email;
-            userEntity.Password = user.Password;
+            userEntity.Password = pass;
             userEntity.Status = user.Status;
 
-            // Limpiar roles actuales
             userEntity.Roles.Clear();
 
-            // Asignar nuevos roles sin duplicados
             if (user.IdRol != null && user.IdRol.Count > 0)
             {
                 foreach (var roleId in user.IdRol.Distinct())

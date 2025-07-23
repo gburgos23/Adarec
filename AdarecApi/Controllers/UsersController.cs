@@ -11,6 +11,24 @@ namespace AdarecApi.Controllers
         private readonly IUserService _service = service;
 
         /// <summary>
+        /// Obtiene todos los usuarios.
+        /// </summary>
+        /// <remarks>
+        /// Devuelve una lista de todos los usuarios en el sistema.
+        /// </remarks>
+        /// <response code="200">Lista de usuarios encontrada.</response>
+        /// <response code="404">No se encontraron usuarios.</response>
+        [HttpGet]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(List<TechnicianDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetUsers()
+        {
+            var users = await _service.GetAllUsersAsync();
+            return StatusCode(StatusCodes.Status200OK, users);
+        }
+
+        /// <summary>
         /// Obtiene todos los usuarios activos.
         /// </summary>
         /// <remarks>
@@ -19,16 +37,17 @@ namespace AdarecApi.Controllers
         /// <response code="200">Lista de usuarios encontrada.</response>
         /// <response code="404">No se encontraron usuarios activos.</response>
         [HttpGet]
+        [Route("active")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(List<TechnicianDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetActiveUsers()
         {
             var users = await _service.GetAllUsersAsync();
-            if (users.Count > 0)
-                return StatusCode(StatusCodes.Status200OK, users);
-            else
+            var activeUsers = users.Where(u => u.Status).ToList();
+            if (activeUsers.Count == 0)
                 return StatusCode(StatusCodes.Status404NotFound, "No active users found.");
+            return StatusCode(StatusCodes.Status200OK, activeUsers);
         }
 
         /// <summary>
@@ -51,7 +70,7 @@ namespace AdarecApi.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> PostUser([FromBody] TechnicianDto user)
         {
-            if (user == null || user.TechnicianId != null)
+            if (user == null || user.TechnicianId != null || string.IsNullOrEmpty(user.Password))
                 return BadRequest("Invalid user data.");
             try
             {
@@ -85,7 +104,7 @@ namespace AdarecApi.Controllers
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> PutUser([FromBody] TechnicianDto user)
         {
-            if (user == null || user.TechnicianId <= 0)
+            if (user == null || user.TechnicianId == null || string.IsNullOrEmpty(user.Password))
                 return BadRequest("Invalid user data.");
             try
             {

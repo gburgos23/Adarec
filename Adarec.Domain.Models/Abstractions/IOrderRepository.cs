@@ -15,7 +15,7 @@ namespace Adarec.Domain.Models.Abstractions
 
         Task<List<Order>> GetAllOrders();
 
-        Task<List<Order>> GetTicketCountByStatusAsync(int year, int month, int? technicianId = null);
+        Task<List<Order>> GetTicketCountByStatusAsync(int? year = null, int? month = null, int? technicianId = null);
 
         Task<List<User>> GetTechniciansAsync();
     }

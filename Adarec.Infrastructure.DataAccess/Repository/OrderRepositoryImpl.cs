@@ -78,27 +78,36 @@ namespace Adarec.Infrastructure.DataAccess.Repository
             return order;
         }
 
-        public async Task<List<Order>> GetTicketCountByStatusAsync(int year, int month, int? technicianId = null)
+        public async Task<List<Order>> GetTicketCountByStatusAsync(int? year, int? month, int? technicianId = null)
         {
-            var orders = await _context.Orders
+
+            var query = _context.Orders
                 .Include(o => o.OrderStatus)
                 .Include(o => o.OrderAssignments)
                     .ThenInclude(oa => oa.Technician)
-                .Where(o => o.ScheduledFor.HasValue
-                    && o.ScheduledFor.Value.Year == year
-                    && o.ScheduledFor.Value.Month == month
-                    && o.OrderAssignments.Any(oa => technicianId == null || oa.TechnicianId == technicianId))
-                .ToListAsync();
+                .AsQueryable();
 
+            if (year.HasValue)
+                query = query.Where(o => o.ScheduledFor.HasValue && o.ScheduledFor.Value.Year == year.Value);
+            if (month.HasValue)
+                query = query.Where(o => o.ScheduledFor.HasValue && o.ScheduledFor.Value.Month == month.Value);
+            if (technicianId.HasValue)
+                query = query.Where(o => o.OrderAssignments.Any(oa => oa.TechnicianId == technicianId.Value));
+
+            var orders = await query.ToListAsync();
             return orders;
         }
 
         public async Task<List<User>> GetTechniciansAsync()
         {
+
             return await _context.Users
                 .Include(u => u.OrderAssignments)
+                    .ThenInclude(o => o.Order)
                 .Include(u => u.Roles)
-                .Where(u => u.Status && u.Roles.Any(r => r.RoleId == 2))
+                .Where(u => u.Status
+                    && u.Roles.Any(r => r.RoleId == 2)
+                    && u.OrderAssignments.Any(o => o.Order.OrderStatusId != 3))
                 .ToListAsync();
         }
     }
