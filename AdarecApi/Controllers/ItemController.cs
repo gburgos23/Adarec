@@ -61,11 +61,55 @@ namespace AdarecApi.Controllers
             try
             {
                 await _orderDetailService.UpdateOrderDetailAsync(deviceDetail);
-                return StatusCode(StatusCodes.Status200OK, "Detalle de dispositivo actualizado exitosamente.");
+                return StatusCode(StatusCodes.Status204NoContent);
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error al actualizar el detalle: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Inserta una lista de detalles de dispositivos para una orden.
+        /// </summary>
+        /// <remarks>
+        /// Inserta múltiples detalles de dispositivos asociados a una orden. No se debe enviar <c>DetailId</c>.
+        /// 
+        /// <b>Ejemplo de body:</b>
+        /// [
+        ///   {
+        ///     "orderId": 5,
+        ///     "modelId": 10,
+        ///     "itemStatusId": 2,
+        ///     "quantity": 1,
+        ///     "deviceSpecs": "HP LaserJet Pro, WiFi",
+        ///     "intakePhoto": "base64string"
+        ///   }
+        /// ]
+        /// </remarks>
+        /// <param name="deviceDetails">Lista de DeviceDetailDto a insertar.</param>
+        /// <response code="201">Detalles insertados exitosamente.</response>
+        /// <response code="400">Datos inválidos.</response>
+        /// <response code="500">Error interno al insertar los detalles.</response>
+        [HttpPost("device-details")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> PostDeviceDetails([FromBody] DeviceDetailDto detail)
+        {
+            if (detail.OrderId == null || detail.OrderId <= 0)
+                return BadRequest("Todos los dispositivos deben tener un OrderId válido.");
+            if (detail.DetailId != null && detail.DetailId > 0)
+                return BadRequest("No se debe enviar DetailId para inserción.");
+
+            try
+            {
+                await _orderDetailService.AddOrderDetailAsync(detail);
+                return StatusCode(StatusCodes.Status201Created, "Detalles de dispositivos insertados exitosamente.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error al insertar los detalles: {ex.Message}");
             }
         }
     }

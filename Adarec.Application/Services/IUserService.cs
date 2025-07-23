@@ -20,9 +20,6 @@ namespace Adarec.Application.Services
         Task UpdateUserAsync(TechnicianDto user);
 
         [OperationContract]
-        Task<List<TechnicianWorkloadDto>> GetTechnicianWorkloadAsync();
-
-        [OperationContract]
         Task DeleteUserAsync(int customerId);
     }
 }

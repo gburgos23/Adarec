@@ -3,6 +3,7 @@ namespace Adarec.Application.DTO.DTOs
 {
     public class DeviceDetailDto
     {
+        public int? OrderId { get; set; }
         public int? DetailId { get; set; }
         public int? ModelId { get; set; }
         public string? ModelName { get; set; }

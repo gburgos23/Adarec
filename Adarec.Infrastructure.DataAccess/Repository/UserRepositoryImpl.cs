@@ -9,15 +9,6 @@ namespace Adarec.Infrastructure.DataAccess.Repository
     {
         private readonly adarecContext _context = context;
 
-        public async Task<List<User>> GetTechniciansAsync()
-        {
-            return await _context.Users
-                .Include(u => u.OrderAssignments)
-                .Include(u => u.Roles)
-                .Where(u => u.Status && u.Roles.Any(r => r.RoleId == 2))
-                .ToListAsync();
-        }
-
         public async Task<List<User>> GetAllUsersAsync()
         {
             return await _context.Users

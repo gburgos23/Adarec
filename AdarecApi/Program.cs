@@ -3,6 +3,9 @@ using Adarec.Application.ServicesImpl;
 using Adarec.Domain.Models.Entities;
 using Adarec.Infrastructure.CrossCuting.Services;
 using Adarec.Infrastructure.CrossCuting.ServicesImpl;
+using Adarec.Infrastructure.MailServices.Services;
+using Adarec.Infrastructure.MailServices.ServicesImpl;
+using MailKit;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using System.Text.Json;
@@ -46,6 +49,7 @@ builder.Services.AddScoped<ICustomerService, CustomerServiceImpl>();
 builder.Services.AddScoped<IIdentificationTypeService, IdentificationTypeServiceImpl>();
 builder.Services.AddScoped<IOrderStatusService, OrderStatusServiceImpl>();
 builder.Services.AddScoped<IItemStatusService, ItemStatusServiceImpl>();
+builder.Services.AddScoped<ISendMailService, SendMailServiceImpl>();
 
 var app = builder.Build();
 

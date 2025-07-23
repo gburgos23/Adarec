@@ -27,6 +27,7 @@ namespace Adarec.Application.Services
         Task<List<TicketCountByStatusDto>> GetTicketCountByStatusAsync(int year, int month, int? technicianId = null);
 
         [OperationContract]
-        Task<List<SolutionDetailDto>> GetSolutionsByOrderAsync(int orderId);
+        Task<List<TechnicianWorkloadDto>> GetTechnicianWorkloadAsync();
+
     }
 }

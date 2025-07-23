@@ -112,17 +112,5 @@ namespace Adarec.Application.ServicesImpl
 
             await _userRepository.UpdateAsync(userEntity);
         }
-
-        public async Task<List<TechnicianWorkloadDto>> GetTechnicianWorkloadAsync()
-        {
-            var technicians = await _userRepository.GetTechniciansAsync();
-
-            return technicians.Select(u => new TechnicianWorkloadDto
-            {
-                TechnicianId = u.UserId,
-                TechnicianName = u.Name,
-                AssignedOrdersCount = u.OrderAssignments?.Count() ?? 0
-            }).ToList();
-        }
     }
 }

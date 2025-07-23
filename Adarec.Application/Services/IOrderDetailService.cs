@@ -12,7 +12,7 @@ namespace Adarec.Application.Services
         Task<OrderDetail?> GetOrderDetailByIdAsync(int detailId);
 
         [OperationContract]
-        Task AddOrderDetailAsync(OrderDetail detail);
+        Task AddOrderDetailAsync(DeviceDetailDto detail);
 
         [OperationContract]
         Task UpdateOrderDetailAsync(DeviceDetailDto detail);
@@ -20,7 +20,5 @@ namespace Adarec.Application.Services
         [OperationContract]
         Task DeleteOrderDetailAsync(int detailId);
 
-        [OperationContract]
-        Task<List<PendingOrderFullDetailDto>> GetAllPendingOrdersWithDetailsAsync();
     }
 }

@@ -17,21 +17,13 @@ namespace AdarecApi.Controllers
         [HttpGet]
         [Produces("application/json")]
         [ProducesResponseType(typeof(List<CustomerDetailDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAllCustomers()
         {
             try
             {
                 var customers = await _service.GetAllCustomersAsync();
-                if (customers.Count > 0)
-                {
-                    return StatusCode(StatusCodes.Status200OK, customers);
-                }
-                else
-                {
-                    return StatusCode(StatusCodes.Status404NotFound, "No se encontraron clientes.");
-                }
+                return StatusCode(StatusCodes.Status200OK, customers);
             }
             catch (Exception ex)
             {
@@ -149,40 +141,6 @@ namespace AdarecApi.Controllers
             {
                 await _service.DeleteCustomerAsync(customerId);
                 return StatusCode(StatusCodes.Status204NoContent);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Lista las órdenes por cliente.
-        /// </summary>
-        /// <remarks>
-        /// Devuelve una lista de clientes junto con sus órdenes asociadas.
-        /// </remarks>
-        /// <response code="200">Lista de órdenes encontrada.</response>
-        /// <response code="404">No se encontraron órdenes para los clientes.</response>
-        /// <response code="500">Error interno del servidor.</response>
-        [HttpGet("orders")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(List<CustomerOrdersDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ListOrdersByCustomer()
-        {
-            try
-            {
-                var customers = await _service.ListOrdersByCustomerAsync();
-                if (customers.Count > 0)
-                {
-                    return StatusCode(StatusCodes.Status200OK, customers);
-                }
-                else
-                {
-                    return StatusCode(StatusCodes.Status404NotFound, "No se encontraron órdenes para los clientes.");
-                }
             }
             catch (Exception ex)
             {

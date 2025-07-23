@@ -21,14 +21,6 @@ namespace TestAdarec
             _orderDetailService = new OrderDetailServiceImpl(_context);
         }
 
-        [Test]
-        public async Task TestGetAllPendingOrdersWithDetails()
-        {
-            var result = await _orderDetailService.GetAllPendingOrdersWithDetailsAsync();
-            Console.WriteLine($"Resultado: {JsonConvert.SerializeObject(result)}");
-            Assert.IsNotNull(result);
-        }
-
         [TearDown]
         public void Cleanup()
         {

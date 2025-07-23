@@ -122,35 +122,5 @@ namespace Adarec.Application.ServicesImpl
                 throw new Exception(ex.Message);
             }
         }
-
-        public async Task<List<CustomerOrdersDto>> ListOrdersByCustomerAsync()
-        {
-            try
-            {
-                var customers = await _customerRepository.ListOrdersByCustomerAsync();
-
-                var result = customers.Select(c => new CustomerOrdersDto
-                {
-                    CustomerId = c.CustomerId,
-                    CustomerName = c.Name,
-                    Orders = c.Orders?.Select(o => new SimpleOrderSummaryDto
-                    {
-                        OrderId = o.OrderId ?? 0,
-                        Description = o.Description,
-                        Status = o.OrderStatus != null ? o.OrderStatus.Name : "Sin estado",
-                        TechnicianName = o.OrderAssignments != null && o.OrderAssignments.Count != 0
-                            ? o.OrderAssignments.OrderByDescending(a => a.AssignedAt).FirstOrDefault()?.Technician?.Name ?? "No asignado"
-                            : "No asignado",
-                        ScheduledFor = o.ScheduledFor
-                    }).ToList() ?? new List<SimpleOrderSummaryDto>()
-                }).ToList();
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
     }
 }

@@ -99,27 +99,6 @@ namespace AdarecApi.Controllers
         }
 
         /// <summary>
-        /// Obtiene la carga de trabajo de los técnicos.
-        /// </summary>
-        /// <remarks>
-        /// Devuelve una lista con la cantidad de órdenes asignadas a cada técnico.
-        /// </remarks>
-        /// <response code="200">Lista de cargas de trabajo encontrada.</response>
-        /// <response code="404">No se encontraron técnicos con carga de trabajo.</response>
-        [HttpGet("workload")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(List<TechnicianWorkloadDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetTechnicianWorkload()
-        {
-            var workload = await _service.GetTechnicianWorkloadAsync();
-            if (workload.Count > 0)
-                return StatusCode(StatusCodes.Status200OK, workload);
-            else
-                return StatusCode(StatusCodes.Status404NotFound, "No technician workload found.");
-        }
-
-        /// <summary>
         /// Elimina (inhabilita) un usuario por su ID.
         /// </summary>
         [HttpDelete("{userId:int}")]

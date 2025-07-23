@@ -9,11 +9,5 @@ namespace Adarec.Application.Services
     {
         [OperationContract]
         Task<List<RolDto>> GetAllRolesAsync();
-
-        [OperationContract]
-        Task AddRoleAsync(RolDto role);
-
-        [OperationContract]
-        Task UpdateRoleAsync(RolDto role);
     }
 }

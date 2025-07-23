@@ -15,9 +15,28 @@ namespace Adarec.Application.ServicesImpl
             return await _orderDetailRepository.GetByIdAsync(detailId);
         }
 
-        public async Task AddOrderDetailAsync(OrderDetail detail)
+        public async Task AddOrderDetailAsync(DeviceDetailDto detail)
         {
-            await _orderDetailRepository.AddAsync(detail);
+            try
+            {
+                var orderDetail = new OrderDetail
+                {
+                    ModelId = detail.ModelId,
+                    Quantity = detail.Quantity,
+                    IntakePhoto = detail.IntakePhoto,
+                    DeviceSpecs = detail.DeviceSpecs ?? string.Empty,
+                    ItemStatusId = detail.ItemStatusId,
+                    DateUpdated = DateTime.UtcNow,
+                    solution_photo = detail.SolutionPhoto,
+                    OrderId = detail.OrderId ?? throw new ArgumentException("OrderId no puede ser nulo."),
+                };
+
+                await _orderDetailRepository.AddAsync(orderDetail);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al agregar el detalle de dispositivo: {ex.Message}", ex);
+            }
         }
 
         public async Task UpdateOrderDetailAsync(DeviceDetailDto detail)
@@ -47,11 +66,6 @@ namespace Adarec.Application.ServicesImpl
         public async Task DeleteOrderDetailAsync(int detailId)
         {
             await _orderDetailRepository.DeleteAsync(detailId);
-        }
-
-        public async Task<List<PendingOrderFullDetailDto>> GetAllPendingOrdersWithDetailsAsync()
-        {
-            return await _orderDetailRepository.GetAllPendingOrdersWithDetailsAsync();
         }
     }
 }

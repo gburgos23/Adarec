@@ -5,6 +5,5 @@ namespace Adarec.Domain.Models.Abstractions
 {
     public interface IOrderDetailRepository : IRepository<OrderDetail>
     {
-        Task<List<PendingOrderFullDetailDto>> GetAllPendingOrdersWithDetailsAsync();
     }
 }

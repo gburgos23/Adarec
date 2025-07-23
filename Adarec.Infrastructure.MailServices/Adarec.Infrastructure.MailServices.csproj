@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="4.13.0" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Adarec.Application.DTO\Adarec.Application.DTO.csproj" />
+    <ProjectReference Include="..\Adarec.Application\Adarec.Application.csproj" />
+  </ItemGroup>
+
 </Project>

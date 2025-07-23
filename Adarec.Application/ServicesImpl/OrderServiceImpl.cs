@@ -83,65 +83,102 @@ namespace Adarec.Application.ServicesImpl
 
                 return await _orderRepository.AddOrderAsync(order);
             }
-            catch (Exception ex) { 
+            catch (Exception ex)
+            {
                 throw new Exception($"Error al ingresar orden: {ex.Message}");
             }
         }
 
         public async Task UpdateOrderAsync(OrderDto orderDto)
         {
-            var order = await _context.Orders
-               .Include(o => o.OrderDetails)
-               .Include(o => o.OrderAssignments)
-               .Include(o => o.Comments)
-               .FirstOrDefaultAsync(o => o.OrderId == orderDto.OrderId) ?? throw new Exception("Orden no encontrada.");
-            order.Description = orderDto.Description;
-            order.ScheduledFor = orderDto.ScheduledFor;
-            order.DateUpdate = DateTime.UtcNow;
-            order.OrderStatusId = orderDto.OrderStatusId;
-            var customer = await _context.Customers
-                .FirstOrDefaultAsync(c => c.IdentificationNumber == orderDto.Customer.IdentificationNumber);
-            if (customer != null)
-                order.CustomerId = customer.CustomerId;
-
-            order.OrderDetails.Clear();
-            if (orderDto.Devices != null && orderDto.Devices.Count > 0)
+            try
             {
-                foreach (var d in orderDto.Devices)
+                var order = await _context.Orders
+                    .Include(o => o.OrderDetails)
+                    .Include(o => o.OrderAssignments)
+                    .Include(o => o.Comments)
+                    .FirstOrDefaultAsync(o => o.OrderId == orderDto.OrderId)
+                    ?? throw new Exception("Orden no encontrada.");
+
+                order.Description = orderDto.Description;
+                order.ScheduledFor = orderDto.ScheduledFor;
+                order.DateUpdate = DateTime.UtcNow;
+                order.OrderStatusId = orderDto.OrderStatusId;
+
+                var customer = await _context.Customers
+                    .FirstOrDefaultAsync(c => c.IdentificationNumber == orderDto.Customer.IdentificationNumber);
+                if (customer != null)
+                    order.CustomerId = customer.CustomerId;
+
+                var incomingDetails = orderDto.Devices ?? [];
+
+                var toRemove = order.OrderDetails
+                    .Where(od => !incomingDetails.Any(d => d.DetailId == od.DetailId))
+                    .ToList();
+                foreach (var od in toRemove)
+                    _context.OrderDetails.Remove(od);
+
+                foreach (var d in incomingDetails)
                 {
-                    order.OrderDetails.Add(new OrderDetail
+                    var existing = order.OrderDetails.FirstOrDefault(od => od.DetailId == d.DetailId);
+                    if (existing != null)
                     {
-                        ModelId = d.ModelId,
-                        ItemStatusId = d.ItemStatusId,
-                        DeviceSpecs = d.DeviceSpecs,
-                        Quantity = d.Quantity,
-                        DateUpdated = DateTime.UtcNow,
-                        IntakePhoto = d.IntakePhoto
+                        existing.ModelId = d.ModelId;
+                        existing.ItemStatusId = d.ItemStatusId;
+                        existing.DeviceSpecs = d.DeviceSpecs;
+                        existing.Quantity = d.Quantity;
+                        existing.DateUpdated = DateTime.UtcNow;
+                        existing.IntakePhoto = d.IntakePhoto;
+                    }
+                    else
+                    {
+                        order.OrderDetails.Add(new OrderDetail
+                        {
+                            OrderId = (int)order.OrderId!,
+                            ModelId = d.ModelId,
+                            ItemStatusId = d.ItemStatusId,
+                            DeviceSpecs = d.DeviceSpecs,
+                            Quantity = d.Quantity,
+                            DateUpdated = DateTime.UtcNow,
+                            IntakePhoto = d.IntakePhoto
+                        });
+                    }
+                }
+
+                if (orderDto.TechnicianId != null)
+                {
+                    var existingAssignment = order.OrderAssignments.FirstOrDefault();
+                    if (existingAssignment != null)
+                    {
+                        existingAssignment.TechnicianId = orderDto.TechnicianId.Value;
+                        existingAssignment.AssignedAt = DateTime.UtcNow;
+                    }
+                    else
+                    {
+                        order.OrderAssignments.Add(new OrderAssignment
+                        {
+                            TechnicianId = orderDto.TechnicianId.Value,
+                            AssignedAt = DateTime.UtcNow
+                        });
+                    }
+                }
+
+                if (orderDto.LastComment != null)
+                {
+                    order.Comments.Add(new Comment
+                    {
+                        Comment1 = orderDto.LastComment.Comment,
+                        CreatedAt = DateTime.UtcNow,
+                        UserId = orderDto.LastComment.UserId
                     });
                 }
-            }
 
-            order.OrderAssignments.Clear();
-            if (orderDto.TechnicianId != null)
+                await _orderRepository.UpdateOrderAsync(order);
+            }
+            catch (Exception ex)
             {
-                order.OrderAssignments.Add(new OrderAssignment
-                {
-                    TechnicianId = orderDto.TechnicianId,
-                    AssignedAt = DateTime.UtcNow
-                });
+                throw new Exception($"Error al actualizar la orden: {ex.Message}", ex);
             }
-
-            if (orderDto.LastComment != null)
-            {
-                order.Comments.Add(new Comment
-                {
-                    Comment1 = orderDto.LastComment.Comment,
-                    CreatedAt = DateTime.UtcNow,
-                    UserId = orderDto.LastComment.UserId
-                });
-            }
-
-            await _orderRepository.UpdateOrderAsync(order);
         }
 
         public async Task<List<TechnicianPendingOrdersDto>> ListPendingOrdersByTechnicianAsync(int idTechnician)
@@ -150,31 +187,32 @@ namespace Adarec.Application.ServicesImpl
 
             var result = orders
                 .SelectMany(o => o.OrderAssignments
-                .Where(oa => oa.Technician != null && oa.TechnicianId == idTechnician && oa.Technician.Roles.Any(r => r.RoleId == 2)),
-                (o, oa) => new { o, oa })
-                .GroupBy(x => new { x.oa.Technician.UserId })
+                    .Where(oa => oa.TechnicianId == idTechnician && oa.Technician.Roles.Any(r => r.RoleId == 2)),
+                    (o, oa) => new { o, oa })
+                .GroupBy(x => x.oa.Technician.UserId)
                 .Select(g => new TechnicianPendingOrdersDto
                 {
-                    TechnicianId = g.Key.UserId,
-                    PendingOrders = [.. g.Select(x => new PendingOrderSummaryDto
+                    TechnicianId = g.Key,
+                    TechnicianName = g.Select(x => x.oa.Technician.Name).FirstOrDefault(),
+                    PendingOrders = g.Select(x => new PendingOrderSummaryDto
                     {
                         OrderId = x.o.OrderId,
                         CustomerName = x.o.Customer.Name,
                         Description = x.o.Description,
                         Status = x.o.OrderStatus.OrderStatusId,
+                        StatusDescription = x.o.OrderStatus.Name,
                         ScheduledFor = x.o.ScheduledFor
-                    })],
+                    }).ToList(),
                     Customer = g.Select(x => x.o.Customer)
-                    .Where(c => c != null)
-                    .Select(c => new CustomerDetailDto
-                    {
-                        CustomerId = c.CustomerId,
-                        Name = c.Name,
-                        IdentificationNumber = c.IdentificationNumber,
-                        Email = c.Email,
-                        Phone = c.Phone,
-                        Address = c.Address
-                    }).FirstOrDefault()
+                        .Select(c => new CustomerDetailDto
+                        {
+                            CustomerId = c.CustomerId,
+                            Name = c.Name,
+                            IdentificationNumber = c.IdentificationNumber,
+                            Email = c.Email,
+                            Phone = c.Phone,
+                            Address = c.Address
+                        }).FirstOrDefault()
                 })
                 .ToList();
 
@@ -186,20 +224,19 @@ namespace Adarec.Application.ServicesImpl
             var order = await _orderRepository.GetOrderDetailByIdAsync(orderId);
             if (order == null) return null;
 
-            // Mapeo a DTO
             var lastAssignment = order.OrderAssignments
                 .OrderByDescending(oa => oa.AssignedAt)
                 .FirstOrDefault();
 
             var technician = lastAssignment?.Technician;
 
-            var dto = new OrderFullDetailDto
+            return new OrderFullDetailDto
             {
                 OrderId = order.OrderId,
                 Description = order.Description,
                 Status = order.OrderStatus?.OrderStatusId,
                 ScheduledFor = order.ScheduledFor,
-                Customer = order.Customer != null ? new CustomerDetailDto
+                Customer = order.Customer == null ? null : new CustomerDetailDto
                 {
                     CustomerId = order.Customer.CustomerId,
                     Name = order.Customer.Name,
@@ -207,7 +244,7 @@ namespace Adarec.Application.ServicesImpl
                     Email = order.Customer.Email,
                     Phone = order.Customer.Phone,
                     Address = order.Customer.Address
-                } : null,
+                },
                 Devices = order.OrderDetails?.Select(od => new DeviceDetailDto
                 {
                     DetailId = od.DetailId,
@@ -222,13 +259,13 @@ namespace Adarec.Application.ServicesImpl
                     SolutionPhoto = od.solution_photo,
                     DeviceSpecs = od.DeviceSpecs
                 }).ToList(),
-                Technician = technician != null ? new TechnicianDto
+                Technician = technician == null ? null : new TechnicianDto
                 {
                     TechnicianId = technician.UserId,
                     Name = technician.Name,
                     Email = technician.Email
-                } : null,
-                Comments = order.Comments!
+                },
+                Comments = order.Comments?
                     .OrderByDescending(cm => cm.CreatedAt)
                     .Select(cm => new CommentDetailDto
                     {
@@ -236,11 +273,8 @@ namespace Adarec.Application.ServicesImpl
                         UserName = cm.User?.Name,
                         Comment = cm.Comment1,
                         CreatedAt = cm.CreatedAt
-                    })
-                    .ToList()
+                    }).ToList()
             };
-
-            return dto;
         }
 
         public async Task<List<TechnicianPendingOrdersDto>> GetAllOrders()
@@ -251,29 +285,30 @@ namespace Adarec.Application.ServicesImpl
                 .SelectMany(o => o.OrderAssignments
                     .Where(oa => oa.Technician != null),
                     (o, oa) => new { o, oa })
-                .GroupBy(x => new { x.oa.Technician.UserId })
+                .GroupBy(x => x.oa.Technician.UserId)
                 .Select(g => new TechnicianPendingOrdersDto
                 {
-                    TechnicianId = g.Key.UserId,
-                    PendingOrders = [.. g.Select(x => new PendingOrderSummaryDto
+                    TechnicianId = g.Key,
+                    TechnicianName = g.Select(x => x.oa.Technician.Name).FirstOrDefault(),
+                    PendingOrders = g.Select(x => new PendingOrderSummaryDto
                     {
                         OrderId = x.o.OrderId,
                         CustomerName = x.o.Customer.Name,
                         Description = x.o.Description,
                         Status = x.o.OrderStatus.OrderStatusId,
+                        StatusDescription = x.o.OrderStatus.Name,
                         ScheduledFor = x.o.ScheduledFor
-                    })],
+                    }).ToList(),
                     Customer = g.Select(x => x.o.Customer)
-                    .Where(c => c != null)
-                    .Select(c => new CustomerDetailDto
-                    {
-                        CustomerId = c.CustomerId,
-                        Name = c.Name,
-                        IdentificationNumber = c.IdentificationNumber,
-                        Email = c.Email,
-                        Phone = c.Phone,
-                        Address = c.Address
-                    }).FirstOrDefault()
+                        .Select(c => new CustomerDetailDto
+                        {
+                            CustomerId = c.CustomerId,
+                            Name = c.Name,
+                            IdentificationNumber = c.IdentificationNumber,
+                            Email = c.Email,
+                            Phone = c.Phone,
+                            Address = c.Address
+                        }).FirstOrDefault()
                 })
                 .ToList();
 
@@ -310,29 +345,16 @@ namespace Adarec.Application.ServicesImpl
             return result;
         }
 
-        public async Task<List<SolutionDetailDto>> GetSolutionsByOrderAsync(int orderId)
+        public async Task<List<TechnicianWorkloadDto>> GetTechnicianWorkloadAsync()
         {
-            var solutions = await _orderRepository.GetSolutionsByOrderAsync(orderId);
+            var technicians = await _orderRepository.GetTechniciansAsync();
 
-            var result = solutions.Select(s =>
+            return technicians.Select(u => new TechnicianWorkloadDto
             {
-                var lastAssignment = s.Order?.OrderAssignments
-                    .OrderByDescending(oa => oa.AssignedAt)
-                    .FirstOrDefault();
-
-                var technicianName = lastAssignment?.Technician?.Name ?? "No asignado";
-
-                return new SolutionDetailDto
-                {
-                    SolutionId = s.SolutionId,
-                    TechnicianName = technicianName,
-                    Description = s.Description,
-                    FinalPhoto = s.FinalPhoto,
-                    AppliedAt = s.ClosedAt
-                };
+                TechnicianId = u.UserId,
+                TechnicianName = u.Name,
+                AssignedOrdersCount = u.OrderAssignments?.Count() ?? 0
             }).ToList();
-
-            return result;
         }
     }
 }

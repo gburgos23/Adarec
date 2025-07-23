@@ -11,6 +11,6 @@ namespace Adarec.Application.DTO.DTOs
         public CustomerDetailDto Customer { get; set; }
         public List<DeviceDetailDto> Devices { get; set; }
         public TechnicianDto? Technician { get; set; }
-        public List<CommentDetailDto> Comments { get; set; }
+        public List<CommentDetailDto>? Comments { get; set; }
     }
 }

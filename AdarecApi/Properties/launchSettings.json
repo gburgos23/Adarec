@@ -27,7 +27,12 @@
       "applicationUrl": "https://localhost:7152;http://localhost:5295",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "encryptKey": "QwErTyUiOpAsDfGhJkLzXcVbNm123456"
+        "encryptKey": "QwErTyUiOpAsDfGhJkLzXcVbNm123456",
+        "smtpHost": "smtp.gmail.com",
+        "smtpPort": "587",
+        "smtpUser": "adarecsolutions@gmail.com",
+        "smtpPass": "azox rujp tuck orpf",
+        "smtpFrom": "adarecsolutions@gmail.com"
       }
     },
     "IIS Express": {

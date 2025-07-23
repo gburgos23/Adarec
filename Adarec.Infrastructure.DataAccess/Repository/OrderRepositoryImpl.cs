@@ -34,12 +34,11 @@ namespace Adarec.Infrastructure.DataAccess.Repository
         {
             var orders = await _context.Orders
                 .Include(o => o.Customer)
-                .Include(o => o.OrderDetails)
                 .Include(o => o.OrderAssignments)
                     .ThenInclude(oa => oa.Technician)
-                    .ThenInclude(t => t.Roles)
+                        .ThenInclude(t => t.Roles)
                 .Include(o => o.OrderStatus)
-                .Where(o => o.OrderAssignments.Any(oa => oa.Technician.Roles.Any(r => r.RoleId == 2)) && o.OrderStatusId != 3)
+                .Where(o => o.OrderAssignments.Any(oa => oa.Technician.Roles.Any(r => r.RoleId == 2)))
                 .ToListAsync();
 
             return orders;
@@ -49,7 +48,6 @@ namespace Adarec.Infrastructure.DataAccess.Repository
         {
             var orders = await _context.Orders
                 .Include(o => o.Customer)
-                .Include(o => o.OrderDetails)
                 .Include(o => o.OrderAssignments)
                     .ThenInclude(oa => oa.Technician)
                 .Include(o => o.OrderStatus)
@@ -71,34 +69,13 @@ namespace Adarec.Infrastructure.DataAccess.Repository
                 .Include(o => o.OrderDetails)
                     .ThenInclude(od => od.ItemStatus)
                 .Include(o => o.OrderAssignments)
+                    .ThenInclude(oa => oa.Technician)
                 .Include(o => o.Comments)
                     .ThenInclude(c => c.User)
                 .Include(o => o.OrderStatus)
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
 
             return order;
-        }
-
-        public async Task<List<Order>> GetOrderDetailByCustomerDocumentAsync(string identificationNumber)
-        {
-            var orders = await _context.Orders
-                .Include(o => o.Customer)
-                .Include(o => o.OrderDetails)
-                    .ThenInclude(od => od.Model)
-                        .ThenInclude(m => m.Brand)
-                .Include(o => o.OrderDetails)
-                    .ThenInclude(od => od.Model)
-                        .ThenInclude(m => m.DeviceType)
-                .Include(o => o.OrderDetails)
-                    .ThenInclude(od => od.ItemStatus)
-                .Include(o => o.OrderAssignments)
-                .Include(o => o.Comments)
-                    .ThenInclude(c => c.User)
-                .Include(o => o.OrderStatus)
-                .Where(o => o.Customer.IdentificationNumber == identificationNumber)
-                .ToListAsync();
-
-            return orders;
         }
 
         public async Task<List<Order>> GetTicketCountByStatusAsync(int year, int month, int? technicianId = null)
@@ -116,30 +93,13 @@ namespace Adarec.Infrastructure.DataAccess.Repository
             return orders;
         }
 
-        public async Task<Order?> GetOrderStatusHistoryAsync(int orderId)
+        public async Task<List<User>> GetTechniciansAsync()
         {
-            var order = await _context.Orders
-                .Include(o => o.OrderStatus)
-                .Include(o => o.OrderAssignments)
-                    .ThenInclude(oa => oa.Technician)
-                .Include(o => o.OrderDetails)
-                    .ThenInclude(od => od.ItemStatus)
-                .FirstOrDefaultAsync(o => o.OrderId == orderId);
-
-            return order;
-        }
-
-        public async Task<List<Solution>> GetSolutionsByOrderAsync(int orderId)
-        {
-            var solutions = await _context.Solutions
-                .Include(s => s.Order)
-                .Include(s => s.Order.OrderAssignments)
-                    .ThenInclude(oa => oa.Technician)
-                .Where(s => s.OrderId == orderId)
-                .OrderBy(s => s.ClosedAt)
+            return await _context.Users
+                .Include(u => u.OrderAssignments)
+                .Include(u => u.Roles)
+                .Where(u => u.Status && u.Roles.Any(r => r.RoleId == 2))
                 .ToListAsync();
-
-            return solutions;
         }
     }
 }

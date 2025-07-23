@@ -21,8 +21,5 @@ namespace Adarec.Application.Services
 
         [OperationContract]
         Task DeleteCustomerAsync(int customerId);
-
-        [OperationContract]
-        Task<List<CustomerOrdersDto>> ListOrdersByCustomerAsync();
     }
 }

@@ -26,6 +26,7 @@
     <ProjectReference Include="..\Adarec.Domain.Models\Adarec.Domain.Models.csproj" />
     <ProjectReference Include="..\Adarec.Domain.Services\Adarec.Domain.Services.csproj" />
     <ProjectReference Include="..\Adarec.Infrastructure.CrossCuting\Adarec.Infrastructure.CrossCuting.csproj" />
+    <ProjectReference Include="..\Adarec.Infrastructure.MailServices\Adarec.Infrastructure.MailServices.csproj" />
   </ItemGroup>
 
 </Project>

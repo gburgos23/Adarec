@@ -21,26 +21,5 @@ namespace Adarec.Application.ServicesImpl
                 Status = role.Status
             }).ToList();
         }
-
-        public async Task AddRoleAsync(RolDto role)
-        {
-            var entity = new Role
-            {
-                Name = role.Name,
-                Status = role.Status
-            };
-            await _roleRepository.AddAsync(entity);
-        }
-
-        public async Task UpdateRoleAsync(RolDto role)
-        {
-            var entity = new Role
-            {
-                RoleId = role.RolId,
-                Name = role.Name,
-                Status = role.Status
-            };
-            await _roleRepository.UpdateAsync(entity);
-        }
     }
 }
