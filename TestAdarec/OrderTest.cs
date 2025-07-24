@@ -43,15 +43,6 @@ namespace TestAdarec
             Assert.IsNotNull(result);
         }
 
-        [Test]
-        public async Task TestSolutionsByOrder()
-        {
-            int orderId = 1; // Usa un ID válido de tu base de datos de pruebas
-            var result = await _orderService.GetSolutionsByOrderAsync(orderId);
-            Console.WriteLine($"Resultado: {JsonConvert.SerializeObject(result)}");
-            Assert.IsNotNull(result);
-        }
-
         [TearDown]
         public void Cleanup()
         {

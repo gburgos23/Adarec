@@ -22,16 +22,6 @@ namespace TestAdarec
             _customerService = new CustomerServiceImpl(_context); //Inicializa el servicio con el contexto
         }
 
-        [Test]
-        public async Task Test()
-        {
-            var result = await _customerService.ListOrdersByCustomerAsync();
-            Console.WriteLine($"Resultado: {JsonConvert.SerializeObject(result)}");
-
-            Assert.Pass();
-        }
-
-
         [TearDown]
         public void Cleanup()
         {

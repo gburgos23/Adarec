@@ -199,6 +199,7 @@ namespace Adarec.Application.ServicesImpl
                         OrderId = x.o.OrderId,
                         CustomerName = x.o.Customer.Name,
                         Description = x.o.Description,
+                        CustomerIdentification = x.o.Customer.IdentificationNumber,
                         Status = x.o.OrderStatus.OrderStatusId,
                         StatusDescription = x.o.OrderStatus.Name,
                         ScheduledFor = x.o.ScheduledFor
@@ -295,6 +296,7 @@ namespace Adarec.Application.ServicesImpl
                         OrderId = x.o.OrderId,
                         CustomerName = x.o.Customer.Name,
                         Description = x.o.Description,
+                        CustomerIdentification = x.o.Customer.IdentificationNumber,
                         Status = x.o.OrderStatus.OrderStatusId,
                         StatusDescription = x.o.OrderStatus.Name,
                         ScheduledFor = x.o.ScheduledFor
