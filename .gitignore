@@ -12,3 +12,6 @@ obj/
 # Otros
 *.log
 *.tmp
+/Adarec.Application/Properties/PublishProfiles
+/Adarec.Application.DTO/Properties/PublishProfiles
+/AdarecApi/Properties/PublishProfiles
